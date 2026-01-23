@@ -773,6 +773,9 @@ export const GET_ALL_ACCOUNTS_CASH_REQUEST = 'GET_ALL_ACCOUNTS_CASH_REQUEST';
 export const GET_ALL_ACCOUNTS_CASH_SUCCESS = 'GET_ALL_ACCOUNTS_CASH_SUCCESS';
 export const GET_ALL_ACCOUNTS_CASH_FAILURE = 'GET_ALL_ACCOUNTS_CASH_FAILURE';
 // ++++++++++++++++++++ LEDGER +++++++++++++++++++++++++++
+export const DELETE_CASH_LEDGER_SETTLEMENT_REQUEST = 'DELETE_CASH_LEDGER_SETTLEMENT_REQUEST';
+export const DELETE_CASH_LEDGER_SETTLEMENT_SUCCESS = 'DELETE_CASH_LEDGER_SETTLEMENT_SUCCESS';
+export const DELETE_CASH_LEDGER_SETTLEMENT_FAILURE = 'DELETE_CASH_LEDGER_SETTLEMENT_FAILURE';
 export const GET_ALL_ACCOUNT_LEDGER_REQUEST = 'GET_ALL_ACCOUNT_LEDGER_REQUEST';
 export const GET_ALL_ACCOUNT_LEDGER_SUCCESS = 'GET_ALL_ACCOUNT_LEDGER_SUCCESS';
 export const GET_ALL_ACCOUNT_LEDGER_FAILURE = 'GET_ALL_ACCOUNT_LEDGER_FAILURE';
@@ -3537,6 +3540,17 @@ export const fetchAllAccountcashFailure = (error) => ({
   payload: error
 });
 //  ####################################################################### CUSTOMER LEDGER #####################################################
+export const deleteCashLedgerSettlementRequest = () => ({
+  type: 'DELETE_CASH_LEDGER_SETTLEMENT_REQUEST',
+});
+export const deleteCashLedgerSettlementSuccess = (data) => ({
+  type: 'DELETE_CASH_LEDGER_SETTLEMENT_SUCCESS',
+  payload: data
+});
+export const deleteCashLedgerSettlementFailure = (error) => ({
+  type: 'DELETE_CASH_LEDGER_SETTLEMENT_FAILURE',
+  payload: error
+});
 export const getAllAccountLedgerRequest = (data) => ({
   type: 'GET_ALL_ACCOUNT_LEDGER_REQUEST',
   payload: data

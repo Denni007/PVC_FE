@@ -60,9 +60,16 @@ const Ledgeraccountreport = ({ Open, onClose }) => {
     fetchData();
   }, [dispatch]);
 
+  const formatDateForApi = (date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const handleLedger = () => {
-    const formattedFormDate = formDate.toISOString().split('T')[0];
-    const formattedToDate = toDate.toISOString().split('T')[0];
+    const formattedFormDate = formatDateForApi(formDate);
+    const formattedToDate = formatDateForApi(toDate);
     dispatch(getallAccountledger(AccountId, formattedFormDate, formattedToDate));
     navigate('/accountledger');
     sessionStorage.setItem('RAccountId', AccountId);

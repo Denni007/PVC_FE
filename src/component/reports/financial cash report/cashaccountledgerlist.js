@@ -14,7 +14,8 @@ import {
   Button,
   Menu,
   MenuItem,
-  IconButton
+  IconButton,
+  Checkbox
 } from '@mui/material';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
@@ -24,7 +25,8 @@ import {
   AccountCashledgerImage,
   AccountCashPDF,
   fetchAllAccountCash,
-  getallCashAccountledger
+  getallCashAccountledger,
+  deleteCashLedgerSettlement
 } from 'store/thunk';
 import { useNavigate } from 'react-router';
 import DatePicker from 'react-datepicker';
@@ -38,6 +40,7 @@ import { PiMicrosoftExcelLogoFill } from 'react-icons/pi';
 import { BiSolidFileHtml } from 'react-icons/bi';
 
 const columns = [
+  { id: 'select', label: '', align: 'center' },
   { id: 'date', label: 'Date', align: 'center' },
   { id: 'particulars', label: 'Particulars', align: 'center' },
   { id: 'vchType', label: 'Vch Type', align: 'center' },
@@ -63,7 +66,7 @@ const Cashaccountledgerlist = () => {
   const [Account, setAccount] = useState([]);
   const [Accountname, setAccountname] = useState('');
   const [yearData, setYearData] = useState({});
-  const [getdata, setGetdata] = useState({});
+  // const [getdata, setGetdata] = useState({});
   const [gettodata, setGettodata] = useState({});
   const [toDatec, setToDate] = useState(new Date());
   const [formDatec, setFormDate] = useState(new Date());
@@ -73,12 +76,84 @@ const Cashaccountledgerlist = () => {
   const formData = sessionStorage.getItem('RCAccountformDate');
   const toDate = sessionStorage.getItem('RCAccounttoDate');
 
+  // ✅ Settlement states
+  const [primaryRow, setPrimaryRow] = useState(null);
+  const [selectedAgainst, setSelectedAgainst] = useState([]);
+  const [loadingSettlement, setLoadingSettlement] = useState(false);
+
+  // ---------------- HELPERS ----------------
+
+  const getTypeFromVch = (vchType) => {
+    if (vchType === 'SALES') return 'SALE';
+    if (vchType === 'Receipt') return 'RECEIPT';
+    if (vchType === 'PURCHASE') return 'PURCHASE';
+    if (vchType === 'Payment') return 'PAYMENT';
+    return null;
+  };
+
+  const isAgainstAllowed = (primary, record) => {
+    if (!primary) return true;
+    const pType = getTypeFromVch(primary.vchType);
+    const rType = getTypeFromVch(record.vchType);
+
+    return (
+      (pType === 'SALE' && rType === 'RECEIPT') ||
+      (pType === 'RECEIPT' && rType === 'SALE') ||
+      (pType === 'PURCHASE' && rType === 'PAYMENT') ||
+      (pType === 'PAYMENT' && rType === 'PURCHASE')
+    );
+  };
+
+  const handleCheckboxChange = (record) => {
+    if (!primaryRow) {
+      setPrimaryRow(record);
+      return;
+    }
+
+    console.log("primaryRow", primaryRow);
+    console.log("record", record);
+
+    if (primaryRow === record) {
+      setPrimaryRow(null);
+      setSelectedAgainst([]);
+      return;
+    }
+
+    if (!isAgainstAllowed(primaryRow, record)) return;
+
+    setSelectedAgainst((prev) =>
+      prev.includes(record)
+        ? prev.filter(r => r !== record)
+        : [...prev, record]
+    );
+  };
+
+  const handleDeleteSettlement = async () => {
+    if (!primaryRow || selectedAgainst.length === 0) return;
+
+    setLoadingSettlement(true);
+    try {
+      await dispatch(deleteCashLedgerSettlement({
+        primaryType: getTypeFromVch(primaryRow.vchType),
+        primaryId: primaryRow._id,
+        againstType: getTypeFromVch(selectedAgainst[0].vchType),
+        againstIds: selectedAgainst.map(r => r._id)
+      }, navigate));
+
+      setPrimaryRow(null);
+      setSelectedAgainst([]);
+      handleLedger();
+    } finally {
+      setLoadingSettlement(false);
+    }
+  };
+
   useEffect(() => {
     dispatch(getallCashAccountledger(AccountId, formData, toDate))
       .then((data) => {
         if (data) {
           setYearData(data.years || {});
-          setGetdata(data.form);
+          // setGetdata(data.form);
           setGettodata(data.to);
         } else {
           console.error('Data is undefined.');
@@ -91,6 +166,32 @@ const Cashaccountledgerlist = () => {
         console.error('Error fetching payment ledger data:', error);
       });
   }, [dispatch, AccountId, formData, toDate, navigate]);
+
+  useEffect(() => {
+    const storedAccountId = sessionStorage.getItem('RCAccountId');
+    const storedFromDate = sessionStorage.getItem('RCAccountformDate');
+    const storedToDate = sessionStorage.getItem('RCAccounttoDate');
+
+    if (storedAccountId) {
+      setAccountId(Number(storedAccountId));
+    }
+    if (storedFromDate) {
+      setFormDate(new Date(storedFromDate));
+    }
+    if (storedToDate) {
+      setToDate(new Date(storedToDate));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (AccountIdc && Account.length > 0) {
+      const selected = Account.find(acc => acc.value === Number(AccountIdc));
+      if (selected) {
+        setAccountname(selected.label);
+      }
+    }
+  }, [AccountIdc, Account]);
+
 
   const handleSelectChange = (selectedOption) => {
     if (selectedOption && selectedOption.label) {
@@ -127,12 +228,19 @@ const Cashaccountledgerlist = () => {
     fetchData();
   }, [dispatch]);
 
+  const formatDateForApi = (date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const handleLedger = async () => {
-    const formattedFormDate = formDatec.toISOString().split('T')[0];
-    const formattedToDate = toDatec.toISOString().split('T')[0];
+    const formattedFormDate = formatDateForApi(formDatec);
+    const formattedToDate = formatDateForApi(toDatec);
     const data = await dispatch(getallCashAccountledger(AccountIdc, formattedFormDate, formattedToDate));
     setYearData(data.years || {});
-    setGetdata(data.form);
+    // setGetdata(data.form);
     setGettodata(data.to);
     navigate('/cashaccountledger');
     sessionStorage.setItem('RCAccountId', AccountIdc);
@@ -299,13 +407,17 @@ const Cashaccountledgerlist = () => {
         </Grid>
       </Grid>
       <Grid container spacing={2}>
-        <Grid item xs={12} align="center">
+        {/* <Grid item xs={12} align="center">
           <Typography variant="h6">From:</Typography>
           <Typography variant="h4">{getdata.companyname}</Typography>
           <Typography>{getdata.address1}</Typography>
           <Typography>
             {getdata.city}, {getdata.state}, {getdata.pincode}
           </Typography>
+        </Grid> */}
+        <Grid item xs={12} align="center">
+          <Typography variant="h6">From:</Typography>
+          <Typography variant="h4">Vipulbhai (Surat)</Typography>
         </Grid>
         <Grid item xs={12} align="center">
           <Typography variant="h6">To:</Typography>
@@ -316,6 +428,18 @@ const Cashaccountledgerlist = () => {
           </Typography>
         </Grid>
       </Grid>
+
+      {primaryRow && selectedAgainst.length > 0 && (
+        <Button
+          variant="contained"
+          color="error"
+          onClick={handleDeleteSettlement}
+          disabled={loadingSettlement}
+          style={{ marginBottom: '10px' }}
+        >
+          Delete Settlement
+        </Button>
+      )}
 
       {Object.entries(yearData).map(([year, data]) => (
         <React.Fragment key={year}>
@@ -334,37 +458,63 @@ const Cashaccountledgerlist = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {console.log(data.records, 'recoderd')}
-                {Object.entries(data.records).map(([date, records]) =>
-                  Array.isArray(records) ? (
-                    records.map((record, idx) => (
-                      <CustomTableRow key={`${date}-${idx}`}>
-                        {columns.map((column) => (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{
-                              color: column.id === 'creditAmount' ? '#00CE00' : column.id === 'debitAmount' ? 'red' : 'inherit'
-                            }}
-                          >
-                            {column.id === 'creditAmount' && record[column.id] !== 0 ? record[column.id] : ''}
-                            {column.id === 'debitAmount' && record[column.id] !== 0 ? record[column.id] : ''}
-                            {column.id === 'date' && (idx === 0 || records[idx - 1]?.date !== record.date)
-                              ? formatDate(record[column.id])
-                              : ''}
-                            {column.id !== 'creditAmount' && column.id !== 'debitAmount' && column.id !== 'date' && record[column.id]}
-                          </TableCell>
-                        ))}
-                      </CustomTableRow>
-                    ))
+                {Object.entries(data.records).map(([date, records]) => {
+                  // 1. LOG THE GROUP DATA (Date and the array of records)
+                  console.log(`Processing Date Group: ${date}`, records);
+
+                  return Array.isArray(records) ? (
+                    records.map((record, idx) => {
+                      // 2. LOG THE INDIVIDUAL RECORD DATA
+                      console.log(`Row Index: ${idx} | Record Data:`, record);
+
+                      return (
+                        <CustomTableRow key={`${date}-${idx}`}>
+                          {columns.map((column) => (
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              style={{
+                                color:
+                                  column.id === 'creditAmount'
+                                    ? '#00CE00'
+                                    : column.id === 'debitAmount'
+                                      ? 'red'
+                                      : 'inherit',
+                              }}
+                            >
+                              {column.id === 'select' && (
+                                <Checkbox
+                                  checked={primaryRow === record || selectedAgainst.includes(record)}
+                                  disabled={
+                                    primaryRow &&
+                                    primaryRow !== record &&
+                                    !isAgainstAllowed(primaryRow, record)
+                                  }
+                                  onChange={() => handleCheckboxChange(record)}
+                                />
+                              )}
+                              {column.id === 'creditAmount' && record[column.id] !== 0 ? record[column.id] : ''}
+                              {column.id === 'debitAmount' && record[column.id] !== 0 ? record[column.id] : ''}
+                              {column.id === 'date' && (idx === 0 || records[idx - 1]?.date !== record.date)
+                                ? formatDate(record[column.id])
+                                : ''}
+                              {column.id !== 'creditAmount' &&
+                                column.id !== 'debitAmount' &&
+                                column.id !== 'date' &&
+                                record[column.id]}
+                            </TableCell>
+                          ))}
+                        </CustomTableRow>
+                      );
+                    })
                   ) : (
-                    <TableRow key={''}>
+                    <TableRow key={date}>
                       <TableCell colSpan={columns.length} align="center">
-                        No records available
+                        No records available for {date}
                       </TableCell>
                     </TableRow>
-                  )
-                )}
+                  );
+                })}
               </TableBody>
               <TableBody>
                 <TableRow>
