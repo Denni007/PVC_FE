@@ -121,10 +121,17 @@ const Accountledgerlist = () => {
         console.error('Error fetching payment ledger data:', error);
       });
   }, [dispatch, AccountId, formData, toDate, navigate]);
+  
+  const formatDateForApi = (date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
 
   const handleLedger = async () => {
-    const formattedFormDate = formDatec.toISOString().split('T')[0];
-    const formattedToDate = toDatec.toISOString().split('T')[0];
+    const formattedFormDate = formatDateForApi(formDatec);
+    const formattedToDate = formatDateForApi(toDatec);
     const data = await dispatch(getallAccountledger(AccountIdc, formattedFormDate, formattedToDate));
     setYearData(data.years || {});
     setGetdata(data.form);

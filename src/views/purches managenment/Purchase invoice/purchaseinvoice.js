@@ -199,7 +199,6 @@ const Purchaseinvoice = () => {
     setIsproductDrawerOpen(false);
   };
 
-  console.log(selectAccount, companystate);
   useEffect(() => {
     const initialSubtotal = rows.reduce((acc, row) => acc + row.mrp, 0);
     setSubtotal(initialSubtotal);
@@ -397,9 +396,14 @@ const Purchaseinvoice = () => {
 
   const handledueDateChange = (date) => {
     if (date instanceof Date) {
-      setFormData({ ...formData, duedate: convertToIST(date) });
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+
+      setFormData({ ...formData, duedate: formattedDate });
     } else {
-      console.error('Invalid date provided to handledueDateChange:', date);
+      console.error('Invalid date provided to handleDateChange:', date);
     }
   };
 

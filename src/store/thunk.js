@@ -725,6 +725,9 @@ import {
   fetchAllAccountcashSuccess,
   fetchAllAccountcashFailure,
   // LEdger+++++++++++
+  deleteCashLedgerSettlementRequest,
+  deleteCashLedgerSettlementSuccess,
+  deleteCashLedgerSettlementFailure,
   getAllAccountLedgerRequest,
   getAllAccountLedgerSuccess,
   getAllAccountLedgerFailure,
@@ -7444,6 +7447,36 @@ export const getExpenseAccount = () => {
 };
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ACCOUNT LEDGER +++++++++++++++++++++++++++++++++++++++++++++
+export const deleteCashLedgerSettlement = (payload, navigate) => {
+  return async (dispatch) => {
+    dispatch(deleteCashLedgerSettlementRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/ledger/C_ledger_settlement`, payload, config); 
+
+      const settlementData = response;
+      toast.success(response.data.message, {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000
+      });
+
+      dispatch(deleteCashLedgerSettlementSuccess(settlementData));
+      return settlementData;
+    } catch (error) {
+      dispatch(deleteCashLedgerSettlementFailure(error.message));
+      
+      if (error.response && error.response.status === 401) {
+        navigate('/');
+      } else {
+        const errorMessage = error.response?.data?.message || "An error occurred";
+        toast.error(errorMessage, {
+          autoClose: 1000
+        });
+      }
+    }
+  };
+};
+
 export const getallAccountledger = (id, formDate, toDate) => {
   return async (dispatch) => {
     dispatch(getAllAccountLedgerRequest());
