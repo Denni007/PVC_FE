@@ -451,6 +451,9 @@ import {
   deleteBomRequest,
   deleteBomSuccess,
   deleteBomFailure,
+  deleteSettleBomRequest,
+  deleteSettleBomSuccess,
+  deleteSettleBomFailure,
   // STOKE ++++++++++++++++++++++++++
   getAllStokeRequest,
   getAllStokeSuccess,
@@ -1517,7 +1520,7 @@ export const paymentCashDelete = (id, navigate) => {
     dispatch(deletePaymentCashRequest());
     try {
       const config = createConfig();
-      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/payment/C_soft_delete_paymentCash/${id}`, config);
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/payment/C_delete_paymentCash/${id}`, config);
       const data = response.data.data;
       toast.success(response.data.message, {
         icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
@@ -4120,7 +4123,7 @@ export const deleteRecieveCash = (id, navigate) => {
     dispatch(deleteRecieveCashRequest());
     try {
       const config = createConfig();
-      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/receive/C_soft_delete_receiveCash/${id}`, config);
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/receive/C_delete_receiveCash/${id}`, config);
       const deleteRecievecash = response;
       toast.success(response.data.message, {
         icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
@@ -4634,6 +4637,33 @@ export const deleteBom = (id, navigate) => {
     }
   };
 };
+
+export const settledeleteBom = (id, navigate) => {
+  return async (dispatch) => {
+    dispatch(deleteSettleBomRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/bom/settlement_delete_bom/${id}`, config);
+      const deleteBom = response;
+      toast.success(response.data.message, {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000
+      });
+      dispatch(deleteSettleBomSuccess(deleteBom));
+      return deleteBom;
+    } catch (error) {
+      dispatch(deleteSettleBomFailure(error.message));
+      if (error.response.status === 401) {
+        navigate('/');
+      } else {
+        toast.error(error.response.data.message, {
+          autoClose: 1000
+        });
+      }
+    }
+  };
+};
+
 export const getAllBom = () => {
   return async (dispatch) => {
     dispatch(getAllBomRequest());

@@ -19,6 +19,7 @@ const formatDate = (dateString) => {
 
   return date.toLocaleDateString('en-GB', options);
 };
+
 const CashbookReport = () => {
   const dispatch = useDispatch();
 
@@ -58,102 +59,92 @@ const CashbookReport = () => {
   };
 
   const renderRecordsByDate = (date, data) => {
-    const { totals, closingBalance, records } = data;
+    const { totals, closingBalance, openingBalance, records } = data;
+
     return (
-      <Grid container spacing={2} key={date} style={{ marginBottom: '20px' }}>
+      <Grid container spacing={2} key={date} style={{ marginBottom: '40px', borderBottom: '1px solid #eee', paddingBottom: '20px' }}>
         <Grid item xs={12}>
           <Typography variant="h5" align="center" gutterBottom>
             Date: {formatDate(date)}
           </Typography>
         </Grid>
+
+        {/* Credit Side */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" gutterBottom style={{ textAlign: 'center' }}>
-            Credit
-          </Typography>
-          <Table>
+          <Typography variant="h4" gutterBottom style={{ textAlign: 'center' }}>Credit</Typography>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Amount</TableCell>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Name</TableCell>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Particulars</TableCell>
-                <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>User Name</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {records &&
-                records
-                  .filter((entry) => entry.creditAmount > 0)
-                  .map((entry, index) => (
-                    <TableRow key={index}>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.creditAmount}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.personName}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.details}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.username}</TableCell>
-                    </TableRow>
-                  ))}
-              {totals && (
-                <TableRow>
-                  <TableCell colSpan={4} style={{ textAlign: 'start', fontWeight: 'bold' }}>
-                    Total Credit: {totals.totalCredit}
-                  </TableCell>
+              {/* NEW: Opening Balance as the first row in the Credit Table */}
+              <TableRow style={{ backgroundColor: '#f0f4f8' }}>
+                <TableCell style={{ textAlign: 'center', fontWeight: 'bold' }}>{openingBalance || '0.00'}</TableCell>
+                <TableCell style={{ textAlign: 'center', fontWeight: 'bold' }}></TableCell>
+                <TableCell style={{ textAlign: 'center', fontWeight: 'bold' }}>Opening Balance</TableCell>
+              </TableRow>
+
+              {records && records.filter((entry) => entry.creditAmount > 0).map((entry, index) => (
+                <TableRow key={index}>
+                  <TableCell style={{ textAlign: 'center' }}>{entry.creditAmount}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{entry.personName}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{entry.details}</TableCell>
                 </TableRow>
-              )}
-              {closingBalance && closingBalance.type === 'credit' && (
-                <TableRow>
-                  <TableCell colSpan={4} style={{ textAlign: 'start', fontWeight: 'bold' }}>
-                    Closing Balance: {closingBalance.amount}
-                  </TableCell>
-                </TableRow>
-              )}
+              ))}
+
+              <TableRow>
+                <TableCell colSpan={3} style={{ textAlign: 'start', fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>
+                  Total Day Credit: ₹{totals?.totalCredit || 0}
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </Grid>
 
+        {/* Debit Side */}
         <Grid item xs={12} md={6}>
-          <Typography variant="h4" gutterBottom style={{ textAlign: 'center' }}>
-            Debit
-          </Typography>
-          <Table>
+          <Typography variant="h4" gutterBottom style={{ textAlign: 'center' }}>Debit</Typography>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Amount</TableCell>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Name</TableCell>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Particulars</TableCell>
-                <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>User Name</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {records &&
-                records
-                  .filter((entry) => entry.debitAmount > 0)
-                  .map((entry, index) => (
-                    <TableRow key={index}>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.debitAmount}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.personName}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.details}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.username}</TableCell>
-                    </TableRow>
-                  ))}
-              {totals && (
-                <TableRow>
-                  <TableCell colSpan={4} style={{ textAlign: 'start', fontWeight: 'bold' }}>
-                    Total Debit: {totals.totalDebit}
-                  </TableCell>
+              {/* Note: Opening Balance is typically shown on the Credit side in a Cashbook, 
+                  so we leave the Debit side starting with actual transactions. */}
+              {records && records.filter((entry) => entry.debitAmount > 0).map((entry, index) => (
+                <TableRow key={index}>
+                  <TableCell style={{ textAlign: 'center' }}>{entry.debitAmount}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{entry.personName}</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>{entry.details}</TableCell>
                 </TableRow>
-              )}
-              {closingBalance && closingBalance.type === 'debit' && (
-                <TableRow>
-                  <TableCell colSpan={4} style={{ textAlign: 'start', fontWeight: 'bold' }}>
-                    Closing Balance: {closingBalance.amount}
-                  </TableCell>
-                </TableRow>
-              )}
+              ))}
+
+              <TableRow>
+                <TableCell colSpan={3} style={{ textAlign: 'start', fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>
+                  Total Day Debit: ₹{totals?.totalDebit || 0}
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography variant="h6" align="right" style={{ marginTop: '10px', paddingRight: '20px' }}>
+            Day Closing Balance: ₹{closingBalance?.amount || 0} ({closingBalance?.type || 'N/A'})
+          </Typography>
         </Grid>
       </Grid>
     );
   };
+
   return (
     <Paper elevation={4} style={{ padding: '24px' }}>
       <Typography variant="h4" align="center" gutterBottom id="mycss">

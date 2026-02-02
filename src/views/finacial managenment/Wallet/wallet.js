@@ -155,6 +155,12 @@ const Wallet = () => {
             <Grid item xs={12} sm={6} md={2}>
               <Typography variant="subtitle1">Cash On Hand</Typography>
               <input placeholder="Amount" value={walletcompanybalanceData?.cashOnHand} />
+              <Typography variant="caption" sx={{ display: "block", marginTop: "6px", color: "gray" }}              >
+                Cash 1: ₹{walletcompanybalanceData?.cash1 || 0}
+              </Typography>
+              <Typography variant="caption" sx={{ display: "block", color: "gray" }}              >
+                Cash 2: ₹{walletcompanybalanceData?.cash2 || 0}
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={6} md={2}>
               <Typography variant="subtitle1">Total Balance</Typography>

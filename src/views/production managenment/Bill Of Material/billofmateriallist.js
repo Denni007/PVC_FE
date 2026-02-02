@@ -15,16 +15,18 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton
+  IconButton,
+  Checkbox
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { deleteBom, getAllBom, viewSingleBom } from 'store/thunk';
+import { settledeleteBom, deleteBom, getAllBom, viewSingleBom } from 'store/thunk';
 import { useDispatch } from 'react-redux';
 import useCan from 'views/permission managenment/checkpermissionvalue';
 import { Delete, Edit } from '@mui/icons-material';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 const columns = [
+  { id: 'settle', label: '', align: 'center' }, // ✅ NEW
   { id: 'bomNo', label: 'Batch No.', align: 'center' },
   { id: 'date', label: 'Date.', align: 'center' },
   { id: 'name', label: 'Product Name', align: 'center' },
@@ -34,7 +36,7 @@ const columns = [
 ];
 
 const Billofmateriallist = () => {
-  const { canCreateBom, canDeleteBom, canUpdateBom, canViewBom } = useCan();
+  const { canCreateBom, canDeleteBom, canSettleDeleteBom, canUpdateBom, canViewBom } = useCan();
   const navigate = useNavigate();
   const [bom, setBom] = useState([]);
   const [page, setPage] = useState(0);
@@ -98,6 +100,25 @@ const Billofmateriallist = () => {
     }
   };
 
+  const handleSettleCheckbox = async (id, checked) => {
+    if (!checked) return;
+
+    const confirm = window.confirm(
+      'This will permanently delete the Production. Are you sure?'
+    );
+
+    if (!confirm) return;
+
+    try {
+      await dispatch(settledeleteBom(id));
+      const data = await dispatch(getAllBom());
+      setBom(data);
+    } catch (error) {
+      console.error('Error settling delete BOM:', error);
+    }
+  };
+
+
   return (
     // <Container>
     <Card style={{ width: 'auto', padding: '20px' }}>
@@ -123,7 +144,13 @@ const Billofmateriallist = () => {
               <TableRow key={index} sx={{ backgroundColor: index % 2 === 0 ? 'white' : 'rgba(66, 84, 102, 0.1)' }}>
                 {columns.map((column) => (
                   <TableCell key={column.id} align={column.align}>
-                    {column.id === 'action' ? (
+                    {column.id === 'settle' ? (
+                      <Checkbox
+                        disabled={!canSettleDeleteBom()}
+                        onChange={(e) => handleSettleCheckbox(row.id, e.target.checked)}
+                        color="secondary"
+                      />
+                    ) : column.id === 'action' ? (
                       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                         <IconButton
                           sizeSmall

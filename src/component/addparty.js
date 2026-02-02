@@ -205,113 +205,113 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
   const handlesave = async () => {
     if (loading) return;
 
+    if (!formData.accountname || !formData.accountGroupId) {
+      alert("Please fill in all mandatory fields.");
+      return;
+    }
+
     setLoading(true);
     try {
+      // 1. Base Payload
       const payload = {
         accountGroupId: formData.accountGroupId,
         accountName: formData.accountname,
         shortName: formData.shortname,
         contactPersonName: formData.contactpersonname,
-        accountDetail: {}
+        accountDetail: {} // Initialize as empty object
       };
 
-      if (
+      // 2. Identify if the current selection requires accountDetail
+      const isSundryOrLoan =
         selectedGroup?.label === 'Sundry Creditors' ||
         selectedGroup?.label === 'Sundry Debtors' ||
-        selectedGroup?.label === 'Unsecured Loans'
-      ) {
+        selectedGroup?.label === 'Unsecured Loans';
+
+      // 3. Force populate accountDetail if it's a Sundry group
+      if (isSundryOrLoan) {
         payload.accountDetail = {
-          ...payload.accountDetail,
-          email: sundryDetails.email,
-          mobileNo: sundryDetails.mobileNo,
-          panNo: sundryDetails.panNo,
-          address1: sundryDetails.address1,
-          address2: sundryDetails.address2,
-          city: sundryDetails.city,
-          state: sundryDetails.state,
-          pincode: sundryDetails.pincode,
-          bankDetail: bankdetail
+          email: sundryDetails.email || "",
+          mobileNo: sundryDetails.mobileNo || "",
+          panNo: sundryDetails.panNo || null,
+          address1: sundryDetails.address1 || "",
+          address2: sundryDetails.address2 || null,
+          city: sundryDetails.city || "",
+          state: sundryDetails.state || "",
+          pincode: sundryDetails.pincode || "",
+          bankDetail: bankdetail || false
+        };
+
+        // Add Specific fields for Creditors/Debtors
+        if (selectedGroup?.label === 'Sundry Creditors' || selectedGroup?.label === 'Sundry Debtors') {
+          let balanceValue = parseFloat(sundryDetails.balance) || 0;
+          if (balanceType === 'Debit') {
+            balanceValue = -Math.abs(balanceValue);
+          } else {
+            balanceValue = Math.abs(balanceValue);
+          }
+
+          payload.accountDetail.gstNumber = sundryDetails.gstnumber || null;
+          payload.accountDetail.balance = balanceValue;
+          payload.accountDetail.creditPeriod = sundryDetails.creditperiod || 0;
+          payload.accountDetail.creditLimit = creditlimit || false;
+          payload.accountDetail.registrationType = registrationType || 'Composition';
+
+          if (creditlimit) {
+            payload.accountDetail.totalCredit = totalCredit || 0;
+          }
+        }
+      }
+
+      // 4. Handle Bank specific logic
+      if (bankdetail || selectedGroup?.label === 'Bank Account') {
+        payload.accountDetail = {
+          ...payload.accountDetail, // Keep existing details if any
+          bankName: bankName || "",
+          accountNumber: accountNumber || "",
+          accountHolderName: accountHolderName || "",
+          ifscCode: ifscCode || ""
         };
       }
 
-      if (selectedGroup?.label === 'Sundry Creditors' || selectedGroup?.label === 'Sundry Debtors') {
-        // If Debit is selected, send negative balance; otherwise send as is (Credit)
-        let balanceValue = parseFloat(sundryDetails.balance) || 0;
-        if (balanceType === 'Debit') {
-          balanceValue = -Math.abs(balanceValue);
+      // 5. API Dispatch
+      const result = id
+        ? await dispatch(updateAccount(id, payload, navigate))
+        : await dispatch(createAccounts(payload, navigate));
+
+      if (result) {
+        if (id) {
+          onAccountUpdated(result);
         } else {
-          balanceValue = Math.abs(balanceValue);
+          onAccountCreate(result.data.data);
         }
 
-        payload.accountDetail = {
-          ...payload.accountDetail,
-          gstNumber: sundryDetails.gstnumber,
-          balance: balanceValue,
-          creditPeriod: sundryDetails.creditperiod,
-          creditLimit: creditlimit,
-          registrationType: registrationType
-        };
-
-        if (registrationType === 'Regular') {
-          payload.accountDetail.gstNumber = sundryDetails.gstnumber;
-        }
+        // Reset and Close
+        resetFormState();
+        onClose();
       }
-
-      if (creditlimit === true) {
-        payload.accountDetail.totalCredit = totalCredit;
-      }
-
-      if (bankdetail === true || selectedGroup?.label === 'Bank Account') {
-        payload.accountDetail = {
-          ...payload.accountDetail,
-          bankName: bankName,
-          accountNumber: accountNumber,
-          accountHolderName: accountHolderName,
-          ifscCode: ifscCode
-        };
-      }
-      if (id) {
-        const response = await dispatch(updateAccount(id, payload, navigate));
-        onAccountUpdated(response);
-      } else {
-        const response = await dispatch(createAccounts(payload, navigate));
-        onAccountCreate(response.data.data);
-      }
-      setFormData({
-        accountname: '',
-        shortname: '',
-        contactpersonname: '',
-        accountGroupId: ''
-      });
-      setSundryDetails({
-        email: '',
-        mobileNo: '',
-        panNo: null,
-        state: '',
-        city: '',
-        address1: '',
-        address2: null,
-        pincode: '',
-        balance: '',
-        gstnumber: null,
-        creditperiod: 0
-      });
-      setBankDetail(false);
-      setCreditlimit(false);
-      setBankName('');
-      setAccountNumber('');
-      setAccountHolderName('');
-      setIfscCode('');
-      setTotalCredit('');
-      setSelectedGroup(null);
-      setregistrationType('Composition');
-      setBalanceType('Credit');
-      onClose();
     } catch (error) {
       console.error('Error saving account:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper to keep code clean
+  const resetFormState = () => {
+    setFormData({ accountname: '', shortname: '', contactpersonname: '', accountGroupId: '' });
+    setSundryDetails({
+      email: '', mobileNo: '', panNo: null, state: '', city: '',
+      address1: '', address2: null, pincode: '', balance: '',
+      gstnumber: null, creditperiod: 0
+    });
+    setBankDetail(false);
+    setCreditlimit(false);
+    setBankName('');
+    setAccountNumber('');
+    setAccountHolderName('');
+    setIfscCode('');
+    setTotalCredit('');
+    setSelectedGroup(null);
   };
 
   const handleClose = () => {
@@ -388,8 +388,8 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
 
         <Grid container spacing={2}>
           {selectedGroup?.label === 'Sundry Creditors' ||
-          selectedGroup?.label === 'Sundry Debtors' ||
-          selectedGroup?.label === 'Unsecured Loans' ? (
+            selectedGroup?.label === 'Sundry Debtors' ||
+            selectedGroup?.label === 'Unsecured Loans' ? (
             <>
               <Grid item>
                 <Typography variant="subtitle1">

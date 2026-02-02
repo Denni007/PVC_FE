@@ -75,7 +75,7 @@ const Passbookreport = () => {
               <TableRow>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Amount</TableCell>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Name</TableCell>
-                <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Particulars</TableCell>
+                <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Banks</TableCell>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>User Name</TableCell>
               </TableRow>
             </TableHead>
@@ -87,7 +87,7 @@ const Passbookreport = () => {
                     <TableRow key={index}>
                       <TableCell style={{ textAlign: 'center' }}>{entry.creditAmount}</TableCell>
                       <TableCell style={{ textAlign: 'center' }}>{entry.party}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.details}</TableCell>
+                      <TableCell style={{ textAlign: 'center' }}>{entry.bank}</TableCell>
                       <TableCell style={{ textAlign: 'center' }}>{entry.username}</TableCell>
                     </TableRow>
                   ))}
@@ -118,7 +118,7 @@ const Passbookreport = () => {
               <TableRow>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Amount</TableCell>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Name</TableCell>
-                <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Particulars</TableCell>
+                <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>Banks</TableCell>
                 <TableCell style={{ fontWeight: 'bold', textAlign: 'center' }}>User Name</TableCell>
               </TableRow>
             </TableHead>
@@ -130,7 +130,7 @@ const Passbookreport = () => {
                     <TableRow key={index}>
                       <TableCell style={{ textAlign: 'center' }}>{entry.debitAmount}</TableCell>
                       <TableCell style={{ textAlign: 'center' }}>{entry.party}</TableCell>
-                      <TableCell style={{ textAlign: 'center' }}>{entry.details}</TableCell>
+                      <TableCell style={{ textAlign: 'center' }}>{entry.bank}</TableCell>
                       <TableCell style={{ textAlign: 'center' }}>{entry.username}</TableCell>
                     </TableRow>
                   ))}

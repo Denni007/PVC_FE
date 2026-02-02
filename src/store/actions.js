@@ -2554,6 +2554,18 @@ export const deleteBomFailure = (error) => ({
   type: 'DELETE_BOM_FAILURE',
   payload: error
 });
+export const deleteSettleBomRequest = (data) => ({
+  type: 'DELETE_SETTLE_BOM_REQUEST',
+  payload: data
+});
+export const deleteSettleBomSuccess = (data) => ({
+  type: 'DELETE_SETTLE_BOM_SUCCESS',
+  payload: data
+});
+export const deleteSettleBomFailure = (error) => ({
+  type: 'DELETE_SETTLE_BOM_FAILURE',
+  payload: error
+});
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++ STOKE +++++++++
 export const getAllStokeRequest = (data) => ({
   type: 'FETCH_ALL_STOKE_REQUEST',

@@ -77,76 +77,137 @@ const Cashaccountledgerlist = () => {
   const toDate = sessionStorage.getItem('RCAccounttoDate');
 
   // ✅ Settlement states
-  const [primaryRow, setPrimaryRow] = useState(null);
-  const [selectedAgainst, setSelectedAgainst] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [loadingSettlement, setLoadingSettlement] = useState(false);
 
   // ---------------- HELPERS ----------------
 
-  const getTypeFromVch = (vchType) => {
-    if (vchType === 'SALES') return 'SALE';
-    if (vchType === 'Receipt') return 'RECEIPT';
-    if (vchType === 'PURCHASE') return 'PURCHASE';
-    if (vchType === 'Payment') return 'PAYMENT';
+  const buildSettlementsPayload = (rows) => {
+    const settlements = {};
+
+    rows.forEach(row => {
+      const type = getTypeFromVch(row.vchType);
+      if (!type) return;
+
+      if (!settlements[type]) {
+        settlements[type] = [];
+      }
+      settlements[type].push(row._id);
+    });
+
+    return settlements;
+  };
+
+  const SALE_SIDE = ['SALE'];
+  const SALE_OFFSET = ['RECEIPT', 'CREDIT_NOTE'];
+
+  const PURCHASE_SIDE = ['PURCHASE'];
+  const PURCHASE_OFFSET = ['PAYMENT', 'DEBIT_NOTE'];
+
+  const getSide = (type) => {
+    if (SALE_SIDE.includes(type)) return 'SALE';
+    if (SALE_OFFSET.includes(type)) return 'SALE_OFFSET';
+    if (PURCHASE_SIDE.includes(type)) return 'PURCHASE';
+    if (PURCHASE_OFFSET.includes(type)) return 'PURCHASE_OFFSET';
     return null;
   };
 
-  const isAgainstAllowed = (primary, record) => {
-    if (!primary) return true;
-    const pType = getTypeFromVch(primary.vchType);
-    const rType = getTypeFromVch(record.vchType);
+  const isSelectionCompatible = (rows) => {
+    if (rows.length === 0) return true;
 
-    return (
-      (pType === 'SALE' && rType === 'RECEIPT') ||
-      (pType === 'RECEIPT' && rType === 'SALE') ||
-      (pType === 'PURCHASE' && rType === 'PAYMENT') ||
-      (pType === 'PAYMENT' && rType === 'PURCHASE')
-    );
+    const types = rows.map(r => getTypeFromVch(r.vchType));
+
+    const hasSale = types.includes('SALE');
+    const hasSaleOffset = types.some(t => ['RECEIPT', 'CREDIT_NOTE'].includes(t));
+
+    const hasPurchase = types.includes('PURCHASE');
+    const hasPurchaseOffset = types.some(t => ['PAYMENT', 'DEBIT_NOTE'].includes(t));
+
+    // ❌ Prevent mixing SALES & PURCHASE groups
+    if ((hasSale || hasSaleOffset) && (hasPurchase || hasPurchaseOffset)) {
+      return false;
+    }
+
+    return true;
+  };
+
+
+  const isValidSettlementGroup = (rows) => {
+    if (rows.length < 2) return false;
+
+    const types = rows.map(r => getTypeFromVch(r.vchType));
+    const sides = types.map(getSide);
+
+    const hasSale = sides.includes('SALE');
+    const hasSaleOffset = sides.includes('SALE_OFFSET');
+    const hasPurchase = sides.includes('PURCHASE');
+    const hasPurchaseOffset = sides.includes('PURCHASE_OFFSET');
+
+    // Sales settlement
+    if (hasSale && hasSaleOffset && !hasPurchase && !hasPurchaseOffset) {
+      return true;
+    }
+
+    // Purchase settlement
+    if (hasPurchase && hasPurchaseOffset && !hasSale && !hasSaleOffset) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const getTypeFromVch = (vchType) => {
+    switch (vchType) {
+      case 'SALES':
+        return 'SALE';
+      case 'Receipt':
+        return 'RECEIPT';
+      case 'CREDIT NOTE':
+        return 'CREDIT_NOTE';
+
+      case 'PURCHASE':
+        return 'PURCHASE';
+      case 'Payment':
+        return 'PAYMENT';
+      case 'DEBIT NOTE':
+        return 'DEBIT_NOTE';
+
+      default:
+        return null;
+    }
   };
 
   const handleCheckboxChange = (record) => {
-    if (!primaryRow) {
-      setPrimaryRow(record);
-      return;
-    }
+    setSelectedRows(prev => {
+      const exists = prev.find(r => r._id === record._id);
 
-    console.log("primaryRow", primaryRow);
-    console.log("record", record);
-
-    if (primaryRow === record) {
-      setPrimaryRow(null);
-      setSelectedAgainst([]);
-      return;
-    }
-
-    if (!isAgainstAllowed(primaryRow, record)) return;
-
-    setSelectedAgainst((prev) =>
-      prev.includes(record)
-        ? prev.filter(r => r !== record)
-        : [...prev, record]
-    );
+      if (exists) {
+        return prev.filter(r => r._id !== record._id);
+      } else {
+        return [...prev, record];
+      }
+    });
   };
 
   const handleDeleteSettlement = async () => {
-    if (!primaryRow || selectedAgainst.length === 0) return;
+    if (!isValidSettlementGroup(selectedRows)) return;
 
     setLoadingSettlement(true);
-    try {
-      await dispatch(deleteCashLedgerSettlement({
-        primaryType: getTypeFromVch(primaryRow.vchType),
-        primaryId: primaryRow._id,
-        againstType: getTypeFromVch(selectedAgainst[0].vchType),
-        againstIds: selectedAgainst.map(r => r._id)
-      }, navigate));
 
-      setPrimaryRow(null);
-      setSelectedAgainst([]);
+    try {
+      const settlements = buildSettlementsPayload(selectedRows);
+
+      const payload = { settlements };
+
+      await dispatch(deleteCashLedgerSettlement(payload, navigate));
+
+      setSelectedRows([]);
       handleLedger();
     } finally {
       setLoadingSettlement(false);
     }
   };
+
 
   useEffect(() => {
     dispatch(getallCashAccountledger(AccountId, formData, toDate))
@@ -429,7 +490,7 @@ const Cashaccountledgerlist = () => {
         </Grid>
       </Grid>
 
-      {primaryRow && selectedAgainst.length > 0 && (
+      {isValidSettlementGroup(selectedRows) && (
         <Button
           variant="contained"
           color="error"
@@ -484,11 +545,9 @@ const Cashaccountledgerlist = () => {
                             >
                               {column.id === 'select' && (
                                 <Checkbox
-                                  checked={primaryRow === record || selectedAgainst.includes(record)}
+                                  checked={selectedRows.some(r => r._id === record._id)}
                                   disabled={
-                                    primaryRow &&
-                                    primaryRow !== record &&
-                                    !isAgainstAllowed(primaryRow, record)
+                                    !isSelectionCompatible([...selectedRows, record])
                                   }
                                   onChange={() => handleCheckboxChange(record)}
                                 />

@@ -641,6 +641,9 @@ const useCan = () => {
   const canDeleteBom = () => {
     return checkPermission('Production', 'delete_production');
   };
+  const canSettleDeleteBom = () => {
+    return checkPermission('Production', 'delete_production');
+  };
   const canViewBom = () => {
     return checkPermission('Production', 'view_production');
   };
@@ -1234,6 +1237,7 @@ const useCan = () => {
     canCreateBom,
     canUpdateBom,
     canDeleteBom,
+    canSettleDeleteBom,
     canViewBom,
     canViwAllBom,
     //  STOKE +++++++++++++++++++
