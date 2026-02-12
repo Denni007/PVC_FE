@@ -78,7 +78,15 @@ const Customerview = () => {
                 </Grid>
                 <Grid item xs={12} sm={6} md={3}>
                   <Typography variant="subtitle1">Opening Balance</Typography>
-                  <Typography variant="subtitle2">{data?.accountDetail?.balance}</Typography>
+                  <Typography variant="subtitle2">
+                    {Math.abs(data?.accountDetail?.balance)} {data?.accountDetail?.balance < 0 ? 'Debit' : 'Credit'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Typography variant="subtitle1">Cash Opening Balance</Typography>
+                  <Typography variant="subtitle2">
+                    {Math.abs(data?.accountDetail?.cashOpeningBalance)} {data?.accountDetail?.cashOpeningBalance < 0 ? 'Debit' : 'Credit'}
+                  </Typography>
                 </Grid>
               </>
             ) : (

@@ -49,7 +49,8 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
     address1: '',
     address2: null,
     pincode: '',
-    balance: '',
+    balance: 0,
+    cashOpeningBalance: 0,
     gstnumber: null,
     creditperiod: 0
   });
@@ -57,6 +58,7 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
   const [selectedGroup, setSelectedGroup] = React.useState(null);
   const [registrationType, setregistrationType] = React.useState('Composition');
   const [balanceType, setBalanceType] = React.useState('Credit');
+  const [cashBalanceType, setCashBalanceType] = React.useState('Credit');
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -111,6 +113,10 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
     setBalanceType(event.target.value);
   };
 
+  const handleCashBalanceTypeChange = (event) => {
+    setCashBalanceType(event.target.value);
+  };
+
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -131,7 +137,8 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
             address1: response.accountDetail?.address1 || '',
             address2: response.accountDetail?.address2 || null,
             pincode: response.accountDetail?.pincode || '',
-            balance: response.accountDetail?.balance || '',
+            balance: response.accountDetail?.balance || 0,
+            cashOpeningBalance: response.accountDetail?.cashOpeningBalance || 0,
             gstnumber: response.accountDetail?.gstNumber || 0,
             creditperiod: response.accountDetail?.creditPeriod || 0
           });
@@ -150,6 +157,8 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
           // Calculate balance type from balance value: negative = Debit, otherwise Credit
           const balanceValue = parseFloat(response.accountDetail?.balance || 0);
           setBalanceType(balanceValue < 0 ? 'Debit' : 'Credit');
+          const cashBalanceValue = parseFloat(response.accountDetail?.cashOpeningBalance || 0);
+          setCashBalanceType(cashBalanceValue < 0 ? 'Debit' : 'Credit');
         } else {
           setFormData({
             accountname: '',
@@ -166,7 +175,8 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
             address1: '',
             address2: null,
             pincode: '',
-            balance: '',
+            balance: 0,
+            cashOpeningBalance: 0,
             gstnumber: null,
             creditperiod: 0
           });
@@ -180,6 +190,7 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
           setSelectedGroup(null);
           setregistrationType('Composition');
           setBalanceType('Credit');
+          setCashBalanceType('Credit');
         }
       } catch (error) {
         console.log('Error fetching Account', error);
@@ -249,9 +260,16 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
           } else {
             balanceValue = Math.abs(balanceValue);
           }
+          let cashBalanceValue = parseFloat(sundryDetails.cashOpeningBalance) || 0;
+          if (cashBalanceType === 'Debit') {
+            cashBalanceValue = -Math.abs(cashBalanceValue);
+          } else {
+            cashBalanceValue = Math.abs(cashBalanceValue);
+          }
 
           payload.accountDetail.gstNumber = sundryDetails.gstnumber || null;
           payload.accountDetail.balance = balanceValue;
+          payload.accountDetail.cashOpeningBalance = cashBalanceValue;
           payload.accountDetail.creditPeriod = sundryDetails.creditperiod || 0;
           payload.accountDetail.creditLimit = creditlimit || false;
           payload.accountDetail.registrationType = registrationType || 'Composition';
@@ -301,7 +319,7 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
     setFormData({ accountname: '', shortname: '', contactpersonname: '', accountGroupId: '' });
     setSundryDetails({
       email: '', mobileNo: '', panNo: null, state: '', city: '',
-      address1: '', address2: null, pincode: '', balance: '',
+      address1: '', address2: null, pincode: '', balance: 0, cashOpeningBalance: 0,
       gstnumber: null, creditperiod: 0
     });
     setBankDetail(false);
@@ -471,6 +489,26 @@ const AnchorTemporaryDrawer = ({ open, onClose, id, onAccountCreate, onAccountUp
                       Opening Balance Type : <span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
                     </Typography>
                     <RadioGroup row value={balanceType} onChange={handleBalanceTypeChange}>
+                      <FormControlLabel value="Credit" control={<Radio />} label="Credit" />
+                      <FormControlLabel value="Debit" control={<Radio />} label="Debit" />
+                    </RadioGroup>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="subtitle1">
+                      Cash Opening Balance :
+                    </Typography>
+                    <input
+                      placeholder="Enter Cash Opening Balance"
+                      id="cashOpeningBalance"
+                      value={sundryDetails.cashOpeningBalance}
+                      onChange={handleInputSundryDetailChange}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="subtitle1">
+                      Cash Opening Balance Type :
+                    </Typography>
+                    <RadioGroup row value={cashBalanceType} onChange={handleCashBalanceTypeChange}>
                       <FormControlLabel value="Credit" control={<Radio />} label="Credit" />
                       <FormControlLabel value="Debit" control={<Radio />} label="Debit" />
                     </RadioGroup>
