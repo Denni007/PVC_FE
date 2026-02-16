@@ -47,7 +47,7 @@ const Itemcategory = ({ open, onClose, onnewCategoryadded, onnewCategoryupdated,
           setCategoryName('');
         }
       } catch (error) {
-        if (error.response.status === 401) {
+        if (error.response?.status === 401) {
           navigate('/');
         }
         console.error('Error view item group', error);

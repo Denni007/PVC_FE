@@ -54,6 +54,10 @@ const Productview = () => {
           <Typography variant="subtitle2">{data?.itemCategory?.name}</Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
+          <Typography variant="subtitle1">Item Sub Category</Typography>
+          <Typography variant="subtitle2">{data?.itemSubCategory?.name}</Typography>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
           <Typography variant="subtitle1">Unit</Typography>
           <Typography variant="subtitle2">{data?.unit}</Typography>
         </Grid>

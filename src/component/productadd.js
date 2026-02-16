@@ -6,10 +6,18 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Grid, Typography, Radio, RadioGroup, FormControlLabel, Paper } from '@mui/material';
 import Select from 'react-select';
-import { createProduct, fetchAllItemcategory, fetchAllItemGroup, updateProduct, viewProduct } from 'store/thunk';
+import {
+  createProduct,
+  fetchAllItemcategory,
+  fetchAllItemGroup,
+  getAllItemSubCategoryByCategory,
+  updateProduct,
+  viewProduct
+} from 'store/thunk';
 import { useNavigate } from 'react-router';
 import ItemGroup from './itemgruop';
 import Itemcategory from './itemcategory';
+import ItemSubCategory from './ItemSubCategory';
 import useCan from 'views/permission managenment/checkpermissionvalue';
 
 const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUpdated }) => {
@@ -23,7 +31,7 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { canCreateItemgroup, canseeitemcategory } = useCan();
+  const { canCreateItemgroup, canseeitemcategory, canseeitemsubcategory } = useCan();
   const [loading, setLoading] = React.useState(false);
   const [itemtype, setItemType] = React.useState('Product');
   const [openingstock, setOpeningStock] = React.useState(true);
@@ -31,21 +39,25 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
   const [lowstock, setLowStock] = React.useState(false);
   const [cess, setCess] = React.useState(true);
   const [isWastage, setIsWastage] = React.useState(false);
-  const [selectedGST, setSelectedGST] = React.useState('');
   const [selectedItemGroup, setSelectedItemGroup] = React.useState('');
   const [itemGroupDrawerOpen, setItemGroupDrawerOpen] = React.useState(false);
   const [itemCategoryDrawerOpen, setItemCategoryDrawerOpen] = React.useState(false);
+  const [itemSubCategoryDrawerOpen, setItemSubCategoryDrawerOpen] = React.useState(false);
   const [itemgroupOptions, setItemgroupOptions] = React.useState([]);
   const [itemgroupname, setItemgroupname] = React.useState('');
   const [itemcategoryOptions, setItemcategoryOptions] = React.useState([]);
   const [itemcategoryname, setItemcategoryname] = React.useState('');
+  const [itemSubCategoryOptions, setItemSubCategoryOptions] = React.useState([]);
+  const [itemSubCategoryName, setItemSubCategoryName] = React.useState('');
   const [canCreategroupvalue, setCanCreategroupvalue] = React.useState(null);
   const [canCreatecategoryvalue, setCanCreatecategoryvalue] = React.useState(null);
+  const [canCreateSubCategoryvalue, setCanCreateSubCategoryvalue] = React.useState(null);
   const [formData, setFormData] = React.useState({
     productname: '',
     description: '',
     itemGroupId: '',
     itemCategoryId: '',
+    itemSubCategoryId: '',
     unit: '',
     salesprice: 0,
     purchaseprice: 0,
@@ -58,7 +70,8 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
   React.useEffect(() => {
     setCanCreategroupvalue(canCreateItemgroup());
     setCanCreatecategoryvalue(canseeitemcategory());
-  }, [canCreateItemgroup, canseeitemcategory]);
+    setCanCreateSubCategoryvalue(canseeitemsubcategory());
+  }, [canCreateItemgroup, canseeitemcategory, canseeitemsubcategory]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -106,40 +119,72 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
             value: product.id,
             label: product.name
           }));
-          setItemgroupOptions([{ value: 'new_group', label: 'Create New Group' }, ...options]);
-          if (!canCreategroupvalue) {
-            setItemgroupOptions(options);
-          }
+          setItemgroupOptions(canCreategroupvalue ? [{ value: 'new_group', label: 'Create New Group' }, ...options] : options);
         }
       } catch (error) {
         console.log(error, 'fetch item Group');
       }
     };
-    const itemcategory = async () => {
-      try {
-        const itemcategory = await dispatch(fetchAllItemcategory(selectedItemGroup));
-        if (Array.isArray(itemcategory)) {
-          const options = itemcategory.map((category) => ({
-            value: category.id,
-            label: category.name
-          }));
-          setItemcategoryOptions([{ value: 'new_category', label: 'Create New Category' }, ...options]);
-          if (!canCreatecategoryvalue) {
-            setItemcategoryOptions(options);
-          }
-        }
-      } catch (error) {
-        console.log(error, 'fetch item Category');
-      }
-    };
-
-    if (canCreatecategoryvalue !== null) {
-      itemcategory();
-    }
     if (canCreategroupvalue !== null) {
       itemgroup();
     }
-  }, [dispatch, selectedItemGroup, canCreategroupvalue, canCreatecategoryvalue]);
+  }, [dispatch, canCreategroupvalue]);
+
+  React.useEffect(() => {
+    const itemcategory = async () => {
+      if (selectedItemGroup) {
+        try {
+          const itemcategory = await dispatch(fetchAllItemcategory(selectedItemGroup));
+          if (Array.isArray(itemcategory)) {
+            const options = itemcategory.map((category) => ({
+              value: category.id,
+              label: category.name
+            }));
+            setItemcategoryOptions(canCreatecategoryvalue ? [{ value: 'new_category', label: 'Create New Category' }, ...options] : options);
+          } else {
+            setItemcategoryOptions([]);
+          }
+        } catch (error) {
+          console.log(error, 'fetch item Category');
+          setItemcategoryOptions([]);
+        }
+      } else {
+        setItemcategoryOptions([]);
+      }
+    };
+    if (canCreatecategoryvalue !== null) {
+      itemcategory();
+    }
+  }, [dispatch, selectedItemGroup, canCreatecategoryvalue]);
+
+  React.useEffect(() => {
+    const fetchSubCategories = async () => {
+      if (formData.itemCategoryId) {
+        try {
+          const subCategories = await dispatch(getAllItemSubCategoryByCategory(formData.itemCategoryId));
+          if (Array.isArray(subCategories)) {
+            const options = subCategories.map((sub) => ({
+              value: sub.id,
+              label: sub.name
+            }));
+            const subCategoryOptions = canCreateSubCategoryvalue
+              ? [{ value: 'new_sub_category', label: 'Create New Sub Category' }, ...options]
+              : options;
+            setItemSubCategoryOptions(subCategoryOptions);
+          } else {
+            setItemSubCategoryOptions([]);
+          }
+        } catch (error) {
+          console.log(error, 'fetch item Sub Category');
+          setItemSubCategoryOptions([]);
+        }
+      } else {
+        setItemSubCategoryOptions([]);
+      }
+    };
+
+    fetchSubCategories();
+  }, [dispatch, formData.itemCategoryId, canCreateSubCategoryvalue]);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -147,22 +192,30 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
         if (id) {
           const response = await dispatch(viewProduct(id));
           const productData = response;
-          setFormData({ ...productData, weight: productData.weight });
+          setFormData({
+            ...productData,
+            itemGroupId: productData.itemGroupId || '',
+            itemCategoryId: productData.itemCategoryId || '',
+            itemSubCategoryId: productData.itemSubCategoryId || '',
+            weight: productData.weight
+          });
           setOpeningStock(productData.openingstock);
           setNagativeQty(productData.nagativeqty);
           setLowStock(productData.lowstock);
           setCess(productData.cess);
           setIsWastage(productData.isWastage);
           setItemType(productData.itemtype);
-          setSelectedItemGroup(productData.itemgroup);
+          setSelectedItemGroup(productData.itemGroupId);
           setItemgroupname(productData.itemGroup?.name);
           setItemcategoryname(productData.itemCategory?.name);
+          setItemSubCategoryName(productData.itemSubCategory?.name || '');
         } else {
           setFormData({
             productname: '',
             description: '',
             itemGroupId: '',
-            itemcategory: '',
+            itemCategoryId: '',
+            itemSubCategoryId: '',
             unit: '',
             salesprice: 0,
             purchaseprice: 0,
@@ -171,7 +224,6 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
             lowStockQty: null,
             weight: ''
           });
-          setSelectedGST(0);
           setOpeningStock(true);
           setNagativeQty(false);
           setLowStock(false);
@@ -180,6 +232,7 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
           setSelectedItemGroup('');
           setItemgroupname('');
           setItemcategoryname('');
+          setItemSubCategoryName('');
         }
       } catch (error) {
         console.error('Error fetching Product', error);
@@ -189,7 +242,6 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
   }, [id, dispatch]);
 
   const handleGSTChange = (selectedOption) => {
-    setSelectedGST(selectedOption.value);
     setFormData({ ...formData, gstrate: selectedOption.value });
   };
 
@@ -214,27 +266,7 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
         const newdata = await dispatch(createProduct(data, navigate));
         onNewProductAdded(newdata.data.data);
       }
-      setFormData({
-        productname: '',
-        description: '',
-        itemgroup: '',
-        itemcategory: '',
-        unit: '',
-        salesprice: 0,
-        purchaseprice: 0,
-        HSNcode: 0,
-        gstrate: 0,
-        lowStockQty: null,
-        weight: ''
-      });
-      setSelectedGST('');
-      setOpeningStock(true);
-      setNagativeQty(false);
-      setLowStock(false);
-      setCess(true);
-      setIsWastage(false);
-      setItemType('Product');
-      setSelectedItemGroup('');
+      onClose();
     } catch (error) {
       console.error('Error creating Product', error);
     } finally {
@@ -263,45 +295,70 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
     { value: '28', label: 'GST 28%' }
   ];
   const handleitemgroupChange = (selectedOption) => {
-    if (selectedOption && selectedOption.label === 'Create New Group') {
+    if (selectedOption && selectedOption.value === 'new_group') {
       setItemGroupDrawerOpen(true);
     } else {
-      setSelectedItemGroup(selectedOption.value);
-      setItemgroupname(selectedOption.label);
-      setFormData({ ...formData, itemGroupId: selectedOption.value });
+      const value = selectedOption ? selectedOption.value : '';
+      const label = selectedOption ? selectedOption.label : '';
+      setSelectedItemGroup(value);
+      setItemgroupname(label);
+      setFormData({ ...formData, itemGroupId: value, itemCategoryId: '', itemSubCategoryId: '' });
+      setItemcategoryname('');
+      setItemSubCategoryName('');
     }
   };
 
   const handleitemcategoryChange = (selectedOption) => {
-    if (selectedOption && selectedOption.label === 'Create New Category') {
+    if (selectedOption && selectedOption.value === 'new_category') {
       setItemCategoryDrawerOpen(true);
     } else {
-      setItemcategoryname(selectedOption.label);
-      setFormData({ ...formData, itemCategoryId: selectedOption.value });
+      const value = selectedOption ? selectedOption.value : '';
+      const label = selectedOption ? selectedOption.label : '';
+      setItemcategoryname(label);
+      setFormData({ ...formData, itemCategoryId: value, itemSubCategoryId: '' });
+      setItemSubCategoryName('');
     }
   };
+
+  const handleitemSubCategoryChange = (selectedOption) => {
+    if (selectedOption && selectedOption.value === 'new_sub_category') {
+      setItemSubCategoryDrawerOpen(true);
+    } else {
+      const value = selectedOption ? selectedOption.value : '';
+      const label = selectedOption ? selectedOption.label : '';
+      setItemSubCategoryName(label);
+      setFormData({ ...formData, itemSubCategoryId: value });
+    }
+  };
+
   const handleNewgroupadded = (newGroup) => {
-    const updatedgrouplist = [
-      ...itemgroupOptions,
-      {
-        value: newGroup.id,
-        label: newGroup.name
-      }
-    ];
+    const newOption = { value: newGroup.id, label: newGroup.name };
+    const updatedgrouplist = [...itemgroupOptions, newOption];
     setItemgroupOptions(updatedgrouplist);
+    setSelectedItemGroup(newGroup.id);
+    setItemgroupname(newGroup.name);
+    setFormData({ ...formData, itemGroupId: newGroup.id, itemCategoryId: '', itemSubCategoryId: '' });
     setItemGroupDrawerOpen(false);
   };
+
   const handleNewCategoryadded = (newCategory) => {
-    const updatedcategorylist = [
-      ...itemcategoryOptions,
-      {
-        value: newCategory.id,
-        label: newCategory.name
-      }
-    ];
+    const newOption = { value: newCategory.id, label: newCategory.name };
+    const updatedcategorylist = [...itemcategoryOptions, newOption];
     setItemcategoryOptions(updatedcategorylist);
+    setItemcategoryname(newCategory.name);
+    setFormData({ ...formData, itemCategoryId: newCategory.id, itemSubCategoryId: '' });
     setItemCategoryDrawerOpen(false);
   };
+
+  const handleNewSubCategoryadded = (newSubCategory) => {
+    const newOption = { value: newSubCategory.id, label: newSubCategory.name };
+    const updatedSubCategorylist = [...itemSubCategoryOptions, newOption];
+    setItemSubCategoryOptions(updatedSubCategorylist);
+    setItemSubCategoryName(newSubCategory.name);
+    setFormData({ ...formData, itemSubCategoryId: newSubCategory.id });
+    setItemSubCategoryDrawerOpen(false);
+  };
+
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
       <Paper
@@ -314,89 +371,86 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
           width: { xs: '100%', sm: '660px' }
         }}
       >
-        <Grid item>
-          <Typography variant="h4">New Item</Typography>
-        </Grid>
-        <Grid item>
-          <CancelIcon onClick={onClose} />
-        </Grid>
+        <Typography variant="h4">{id ? 'Update Item' : 'New Item'}</Typography>
+        <CancelIcon onClick={onClose} />
       </Paper>
-      <Box sx={{ width: { xs: 320, sm: 660 }, overflowX: 'hidden', '&::-webkit-scrollbar': { width: '0' } }} role="presentation">
-        <Grid container spacing={2} sx={{ margin: '1px', paddingTop: '50px' }}>
-          <Grid item>
+      <Box sx={{ width: { xs: 320, sm: 660 }, overflowX: 'hidden', '&::-webkit-scrollbar': { width: '0' }, paddingTop: '70px' }} role="presentation">
+        <Grid container spacing={2} sx={{ margin: '1px', padding: '10px' }}>
+          <Grid item xs={12}>
             <Typography variant="subtitle1">
               Item Type : <span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
-            <RadioGroup row defaultValue="Product" value={itemtype} onChange={handleItem}>
+            <RadioGroup row value={itemtype} onChange={handleItem}>
               <FormControlLabel value="Product" control={<Radio />} label="Product" />
               <FormControlLabel value="Service" control={<Radio />} label="Service" />
             </RadioGroup>
           </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{ margin: '1px' }}>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">
               Product : <span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
-            <input placeholder="Enter Product" id="productname" value={formData.productname} onChange={handleInputChange} />
+            <input placeholder="Enter Product" id="productname" value={formData.productname} onChange={handleInputChange} style={{ width: '100%' }} />
           </Grid>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">Product Description</Typography>
-            <input placeholder="Enter Product" id="description" value={formData.description} onChange={handleInputChange} />
+            <input placeholder="Enter Product Description" id="description" value={formData.description} onChange={handleInputChange} style={{ width: '100%' }} />
           </Grid>
-        </Grid>
-
-        <Grid container spacing={2} sx={{ margin: '1px' }}>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">
               Item Group:<span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
             <Select
               id="itemgroup"
               options={itemgroupOptions}
-              value={{ value: formData.itemGroupId, label: itemgroupname }}
-              onChange={(selectedOption) => handleitemgroupChange(selectedOption)}
-              styles={{
-                container: (base) => ({
-                  ...base,
-                  width: '80%'
-                })
-              }}
+              value={formData.itemGroupId ? { value: formData.itemGroupId, label: itemgroupname } : null}
+              onChange={handleitemgroupChange}
+              isClearable
             />
             <ItemGroup
-              anchor="Right"
-              onnewgroupadded={handleNewgroupadded}
               open={itemGroupDrawerOpen}
               onClose={() => setItemGroupDrawerOpen(false)}
+              onnewgroupadded={handleNewgroupadded}
             />
           </Grid>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">
               Item Category:<span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
             <Select
-              id="itemgroup"
+              id="itemcategory"
               options={itemcategoryOptions}
-              value={{ value: formData.itemCategoryId, label: itemcategoryname }}
-              onChange={(selectedOption) => handleitemcategoryChange(selectedOption)}
-              styles={{
-                container: (base) => ({
-                  ...base,
-                  width: '80%'
-                })
-              }}
+              value={formData.itemCategoryId ? { value: formData.itemCategoryId, label: itemcategoryname } : null}
+              onChange={handleitemcategoryChange}
+              isDisabled={!formData.itemGroupId}
+              isClearable
             />
             <Itemcategory
-              onnewCategoryadded={handleNewCategoryadded}
-              ItemGroupOptions={itemgroupOptions}
-              anchor="Right"
               open={itemCategoryDrawerOpen}
               onClose={() => setItemCategoryDrawerOpen(false)}
+              onnewCategoryadded={handleNewCategoryadded}
+              ItemGroupOptions={itemgroupOptions}
+              id={formData.itemGroupId}
             />
           </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{ margin: '1px' }}>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">Item Sub Category:</Typography>
+            <Select
+              id="itemsubcategory"
+              options={itemSubCategoryOptions}
+              value={formData.itemSubCategoryId ? { value: formData.itemSubCategoryId, label: itemSubCategoryName } : null}
+              onChange={handleitemSubCategoryChange}
+              isDisabled={!formData.itemCategoryId}
+              isClearable
+            />
+            <ItemSubCategory
+              open={itemSubCategoryDrawerOpen}
+              onClose={() => setItemSubCategoryDrawerOpen(false)}
+              onnewSubCategoryadded={handleNewSubCategoryadded}
+              id={null}
+              itemCategoryId={formData.itemCategoryId}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">
               Unit : <span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
@@ -406,118 +460,97 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
               onChange={handleUnitChange}
             />
           </Grid>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">
               GST Rate(%):<span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
             <Select
               options={GST}
-              value={formData.gstrate ? { label: `GST ${formData.gstrate}%`, value: formData.gstrate } : { label: selectedGST }}
+              value={formData.gstrate ? { label: `GST ${formData.gstrate}%`, value: formData.gstrate } : null}
               onChange={handleGSTChange}
             />
           </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{ margin: '1px' }}>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">
               HSN Code:<span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
-            <input placeholder="Enter HSN Code" id="HSNcode" value={formData.HSNcode} onChange={handleInputChange} />
+            <input placeholder="Enter HSN Code" id="HSNcode" value={formData.HSNcode} onChange={handleInputChange} style={{ width: '100%' }} />
           </Grid>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">Weight :</Typography>
-            <input type="number" placeholder="Enter weight" id="weight" value={formData.weight} onChange={handleInputChange} />
+            <input type="number" placeholder="Enter weight" id="weight" value={formData.weight} onChange={handleInputChange} style={{ width: '100%' }} />
           </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{ margin: '1px' }}>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">
-              Would you like to add batch wise<br></br>
-              opening stock?
+              Would you like to add batch wise opening stock?
             </Typography>
-            <RadioGroup row defaultValue="No" value={openingstock} onChange={handleOpeningStock}>
+            <RadioGroup row value={openingstock} onChange={handleOpeningStock}>
               <FormControlLabel value="true" control={<Radio />} label="Yes" />
               <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
-        </Grid>
-
-        <Grid item sx={{ margin: '10px 12px' }}>
-          <Typography variant="subtitle1">
-            Negative Qty Allowed :<span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
-          </Typography>
-          <RadioGroup row defaultValue="No" value={nagativeqty} onChange={handleNegativeQty}>
-            <FormControlLabel value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel value="false" control={<Radio />} label="No" />
-          </RadioGroup>
-        </Grid>
-        <Grid item sx={{ margin: '10px 12px' }}>
-          <Typography variant="subtitle1">
-            Low Stock Warning : <span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
-          </Typography>
-          <RadioGroup row defaultValue="No" value={lowstock} onChange={handleLowStock}>
-            <FormControlLabel value="true" control={<Radio />} label="Yes" />
-            <FormControlLabel value="false" control={<Radio />} label="No" />
-          </RadioGroup>
-          {lowstock === true ? (
-            <Grid container sx={{ margin: '0px' }}>
-              <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">
+              Negative Qty Allowed :<span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
+            </Typography>
+            <RadioGroup row value={nagativeqty} onChange={handleNegativeQty}>
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
+            </RadioGroup>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">
+              Low Stock Warning : <span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
+            </Typography>
+            <RadioGroup row value={lowstock} onChange={handleLowStock}>
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
+            </RadioGroup>
+            {lowstock && (
+              <Grid item xs={12}>
                 <Typography variant="subtitle1">Low Stock Quantity:</Typography>
                 <input
                   placeholder="Enter Low Stock Quantity"
                   id="lowStockQty"
                   value={formData.lowStockQty || ''}
                   onChange={handleInputChange}
+                  style={{ width: '100%' }}
                 />
               </Grid>
-            </Grid>
-          ) : (
-            ''
-          )}
-        </Grid>
-
-        <Grid container spacing={2} sx={{ margin: '0px' }}>
-          <Grid item sm={6}>
-            <Typography variant="subtitle1">Purchase Price :</Typography>
-            <input placeholder="0.000" id="purchaseprice" value={formData.purchaseprice} onChange={handleInputChange} />
+            )}
           </Grid>
-          <Grid item sm={6}>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">Purchase Price :</Typography>
+            <input placeholder="0.000" id="purchaseprice" value={formData.purchaseprice} onChange={handleInputChange} style={{ width: '100%' }} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">
               Sales Price: <span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
-            <input placeholder="0.000" id="salesprice" value={formData.salesprice} onChange={handleInputChange} />
+            <input placeholder="0.000" id="salesprice" value={formData.salesprice} onChange={handleInputChange} style={{ width: '100%' }} />
           </Grid>
-        </Grid>
-
-        <Grid container spacing={2} sx={{ margin: '1px' }}>
-          <Grid item sx={{ margin: '0px 0px' }} sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">Cess Enable</Typography>
-            <RadioGroup row defaultValue="No" value={cess} onChange={handleCess}>
+            <RadioGroup row value={cess} onChange={handleCess}>
               <FormControlLabel value="true" control={<Radio />} label="Yes" />
               <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{ margin: '1px' }}>
-          <Grid item sx={{ margin: '0px 0px' }} sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">Is Wastage?</Typography>
-            <RadioGroup row defaultValue="No" value={isWastage} onChange={handleWastage}>
+            <RadioGroup row value={isWastage} onChange={handleWastage}>
               <FormControlLabel value="true" control={<Radio />} label="Yes" />
               <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
         </Grid>
-        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', margin: '20px 10px' }}>
-          <div>
-            <button id="savebtncs" onClick={onClose}>
-              Cancel
-            </button>
-          </div>
-          <div style={{ display: 'flex' }}>
-            <button id="savebtncs" onClick={handleSave} disabled={loading}>
-              {loading ? 'Save' : 'Save'}
-            </button>
-          </div>
+        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+          <button id="savebtncs" onClick={onClose} style={{ marginRight: '10px' }}>
+            Cancel
+          </button>
+          <button id="savebtncs" onClick={handleSave} disabled={loading}>
+            {loading ? 'Saving...' : 'Save'}
+          </button>
         </Grid>
       </Box>
     </Drawer>

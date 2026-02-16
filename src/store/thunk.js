@@ -705,6 +705,27 @@ import {
   getAllItemCategoryRequest,
   getAllItemCategorySuccess,
   getAllItemCategoryFailure,
+
+  // ITEM SUB Category +++++++++++++
+  CreateItemSubCategoryRequest,
+  CreateItemSubCategorySuccess,
+  CreateItemSubCategoryFailure,
+  ViewItemSubCategoryRequest,
+  ViewItemSubCategorySuccess,
+  ViewItemSubCategoryFailure,
+  fetchAllItemSubCategoryRequest,
+  fetchAllItemSubCategorySuccess,
+  fetchAllItemSubCategoryFailure,
+  UpdateItemSubCategoryRequest,
+  UpdateItemSubCategorySuccess,
+  UpdateItemSubCategoryFailure,
+  DeleteItemSubCategoryRequest,
+  DeleteItemSubCategorySuccess,
+  DeleteItemSubCategoryFailure,
+  getAllItemSubCategoryRequest,
+  getAllItemSubCategorySuccess,
+  getAllItemSubCategoryFailure,
+
   // LEDGER OPTIONS +++++++++++++
   fetchAllAccountOptionsRequest,
   fetchAllAccountOptionsSuccess,
@@ -7319,6 +7340,150 @@ export const getAllcategory = (params = {}) => {
       if (error.response.status === 401) {
         navigate('/');
       }
+    }
+  };
+};
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ITEM SUB CATEGORY +++++++++++++++++++++++++++++++++++++++++++++
+
+export const createItemSubCategory = (data, navigate) => {
+  return async (dispatch) => {
+    dispatch(CreateItemSubCategoryRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/itemSubCategory/create_itemSubCategory`,
+        data,
+        config
+      );
+
+      const subCategory = response;
+      dispatch(CreateItemSubCategorySuccess(subCategory));
+
+      toast.success(response.data.message, {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000
+      });
+
+      return subCategory;
+    } catch (error) {
+      dispatch(CreateItemSubCategoryFailure(error.message));
+      if (error.response?.status === 401) navigate('/');
+      else toast.error(error.response?.data?.message, { autoClose: 1000 });
+    }
+  };
+};
+
+export const updateItemSubCategory = (id, data, navigate) => {
+  return async (dispatch) => {
+    dispatch(UpdateItemSubCategoryRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/itemSubCategory/update_itemSubCategory/${id}`,
+        data,
+        config
+      );
+
+      const updated = response;
+      dispatch(UpdateItemSubCategorySuccess(updated));
+
+      toast.success(response.data.message, {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000
+      });
+
+      return updated;
+    } catch (error) {
+      dispatch(UpdateItemSubCategoryFailure(error.message));
+      if (error.response?.status === 401) navigate('/');
+      else toast.error(error.response?.data?.message);
+    }
+  };
+};
+
+export const viewItemSubCategory = (id) => {
+  return async (dispatch) => {
+    dispatch(ViewItemSubCategoryRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/itemSubCategory/view_itemSubCategory/${id}`,
+        config
+      );
+
+      const data = response.data.data;
+      dispatch(ViewItemSubCategorySuccess(data));
+      return data;
+    } catch (error) {
+      toast.error(error.response?.data?.error);
+      dispatch(ViewItemSubCategoryFailure(error.message));
+    }
+  };
+};
+
+export const getAllItemSubCategoryByCategory = (categoryId) => {
+  return async (dispatch) => {
+    dispatch(fetchAllItemSubCategoryRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/itemSubCategory/get_all_itemSubCategory_by_category/${categoryId}`,
+        config
+      );
+
+      const data = response.data.data;
+      dispatch(fetchAllItemSubCategorySuccess(data));
+      return data;
+    } catch (error) {
+      dispatch(fetchAllItemSubCategoryFailure(error.message));
+    }
+  };
+};
+
+export const deleteItemSubCategory = (id, navigate) => {
+  return async (dispatch) => {
+    dispatch(DeleteItemSubCategoryRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BASE_URL}/itemSubCategory/delete_itemSubCategory/${id}`,
+        config
+      );
+
+      const data = response.data.data;
+      dispatch(DeleteItemSubCategorySuccess(data));
+
+      toast.success(response.data.message, {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000
+      });
+
+      return data;
+    } catch (error) {
+      dispatch(DeleteItemSubCategoryFailure(error.message));
+      if (error.response?.status === 401) navigate('/');
+      else toast.error(error.response?.data?.message, { autoClose: 1000 });
+    }
+  };
+};
+
+export const viewAllItemSubCategory = (params = {}) => {
+  return async (dispatch) => {
+    dispatch(getAllItemSubCategoryRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/itemSubCategory/view_all_itemSubCategory`,
+        { ...config, params }
+      );
+
+      const data = response.data.data;
+      dispatch(getAllItemSubCategorySuccess(data));
+      return data;
+    } catch (error) {
+      dispatch(getAllItemSubCategoryFailure(error.message));
+      if (error.response?.status === 401) navigate('/');
     }
   };
 };

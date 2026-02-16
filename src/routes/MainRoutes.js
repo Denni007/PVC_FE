@@ -8,6 +8,7 @@ import ProtectedRoute from 'service/protectedcash';
 import Pagenotification from 'component/notification';
 import ItemgropuList from 'views/production managenment/Item Group/itemgrouplist';
 import ItemcategoryList from 'views/production managenment/Item Category/itemcategorylist';
+import ItemSubCategoryList from 'views/production managenment/Item Sub Category/itemsubcategorylist';
 import Accountledgerlist from 'component/reports/financial report/accountledgerlist';
 import Daybookledgerlist from 'component/reports/financial report/daybookledgerlist';
 import Maintenchedulelist from 'views/machine managenment/mainten shedule/maintenschedulelist';
@@ -24,153 +25,153 @@ import Passbookreport from 'views/finacial managenment/Wallet/passbook';
 import Passbookbookledgerlist from 'component/reports/financial cash report/passbookledgerlist';
 import Maintenscheduleview from 'views/machine managenment/mainten shedule/maintenscheduleview';
 
-const DashboardDefault = Loadable(lazy(() => import('../views/Dashboard')));
-const SamplePage = Loadable(lazy(() => import('../views/SamplePage')));
-const Reports = Loadable(lazy(() => import('../views/finacial managenment/Ledgers/reports')));
-const Reportcash = Loadable(lazy(() => import('../views/finacial managenment/Ledgers/reportscash')));
+const DashboardDefault = Loadable(lazy(() => import('../views/Dashboard')))
+const SamplePage = Loadable(lazy(() => import('../views/SamplePage')))
+const Reports = Loadable(lazy(() => import('../views/finacial managenment/Ledgers/reports')))
+const Reportcash = Loadable(lazy(() => import('../views/finacial managenment/Ledgers/reportscash')))
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of Self Expense +++++++++++++++++++++++++++++++++++++++++++++++++++
-const SelfExpenseList = Loadable(lazy(() => import('../views/finacial managenment/Self Expense/selfExpenseList')));
-const SelfExpensepage = Loadable(lazy(() => import('../views/finacial managenment/Self Expense/selfExpense')));
+const SelfExpenseList = Loadable(lazy(() => import('../views/finacial managenment/Self Expense/selfExpenseList')))
+const SelfExpensepage = Loadable(lazy(() => import('../views/finacial managenment/Self Expense/selfExpense')))
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of claim cash +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Claimcashlist = Loadable(lazy(() => import('../views/finacial managenment/Claim cash/cliamcashlist')));
-const Cliamcashpage = Loadable(lazy(() => import('../views/finacial managenment/Claim cash/cliamcash')));
-const Recieveclaimcashlist = Loadable(lazy(() => import('../views/finacial managenment/Claim cash/recieveclaimcashlist')));
+const Claimcashlist = Loadable(lazy(() => import('../views/finacial managenment/Claim cash/cliamcashlist')))
+const Cliamcashpage = Loadable(lazy(() => import('../views/finacial managenment/Claim cash/cliamcash')))
+const Recieveclaimcashlist = Loadable(lazy(() => import('../views/finacial managenment/Claim cash/recieveclaimcashlist')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of salescash +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Salescash = Loadable(lazy(() => import('../views/sale managenment/Sales cash/salescash')));
-const Salescashlist = Loadable(lazy(() => import('../views/sale managenment/Sales cash/salescashlist')));
-const Salescashview = Loadable(lazy(() => import('../views/sale managenment/Sales cash/salescashview')));
+const Salescash = Loadable(lazy(() => import('../views/sale managenment/Sales cash/salescash')))
+const Salescashlist = Loadable(lazy(() => import('../views/sale managenment/Sales cash/salescashlist')))
+const Salescashview = Loadable(lazy(() => import('../views/sale managenment/Sales cash/salescashview')))
 //
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of payment cash +++++++++++++++++++++++++++++++++++++++++++++++++++
-const ExpenseListPage = Loadable(lazy(() => import('../views/finacial managenment/expense/expenselist')));
-const ExpensePage = Loadable(lazy(() => import('../views/finacial managenment/expense/expense')));
-const PaymentPage = Loadable(lazy(() => import('../views/finacial managenment/Payment cash/paymentcash')));
-const PaymentListPage = Loadable(lazy(() => import('../views/finacial managenment/Payment cash/paymencashtlist')));
-const Paymentrecieve = Loadable(lazy(() => import('../views/finacial managenment/Recieve cash/paymentrecievecash')));
-const PaymentrecieveList = Loadable(lazy(() => import('../views/finacial managenment/Recieve cash/paymentrecievecashlist')));
+const ExpenseListPage = Loadable(lazy(() => import('../views/finacial managenment/expense/expenselist')))
+const ExpensePage = Loadable(lazy(() => import('../views/finacial managenment/expense/expense')))
+const PaymentPage = Loadable(lazy(() => import('../views/finacial managenment/Payment cash/paymentcash')))
+const PaymentListPage = Loadable(lazy(() => import('../views/finacial managenment/Payment cash/paymencashtlist')))
+const Paymentrecieve = Loadable(lazy(() => import('../views/finacial managenment/Recieve cash/paymentrecievecash')))
+const PaymentrecieveList = Loadable(lazy(() => import('../views/finacial managenment/Recieve cash/paymentrecievecashlist')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routs of payment bank ++++++++++++++++++++++++++++++++++++++++++++++++
-const Paymentbank = Loadable(lazy(() => import('../views/finacial managenment/Payment Bank/paymentbank')));
-const Paymentbanklist = Loadable(lazy(() => import('../views/finacial managenment/Payment Bank/paymentbanklist')));
+const Paymentbank = Loadable(lazy(() => import('../views/finacial managenment/Payment Bank/paymentbank')))
+const Paymentbanklist = Loadable(lazy(() => import('../views/finacial managenment/Payment Bank/paymentbanklist')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routs of payment recieve bank ++++++++++++++++++++++++++++++++++++++++++++++++
-const Paymentrecievebank = Loadable(lazy(() => import('../views/finacial managenment/Payment recieve bank/paymentrecievebank')));
-const Paymentrecievebanklist = Loadable(lazy(() => import('../views/finacial managenment/Payment recieve bank/paymentrecievebanklist')));
+const Paymentrecievebank = Loadable(lazy(() => import('../views/finacial managenment/Payment recieve bank/paymentrecievebank')))
+const Paymentrecievebanklist = Loadable(lazy(() => import('../views/finacial managenment/Payment recieve bank/paymentrecievebanklist')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of quotation +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Proformainvoice = Loadable(lazy(() => import('../views/sale managenment/Proformainvoice/proformainvoice')));
-const ProformainvoiceList = Loadable(lazy(() => import('../views/sale managenment/Proformainvoice/proformainvoicelist')));
-const Proformainvoiceviewpage = Loadable(lazy(() => import('../views/sale managenment/Proformainvoice/proformainvoiceview')));
+const Proformainvoice = Loadable(lazy(() => import('../views/sale managenment/Proformainvoice/proformainvoice')))
+const ProformainvoiceList = Loadable(lazy(() => import('../views/sale managenment/Proformainvoice/proformainvoicelist')))
+const Proformainvoiceviewpage = Loadable(lazy(() => import('../views/sale managenment/Proformainvoice/proformainvoiceview')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of quotation +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Purchaseorder = Loadable(lazy(() => import('../views/purches managenment/purchase order/purchaseorderadd')));
-const Purchaseorderlist = Loadable(lazy(() => import('../views/purches managenment/purchase order/purchaseorderlist')));
-const Purchaseorderview = Loadable(lazy(() => import('../views/purches managenment/purchase order/purchaseorderview')));
+const Purchaseorder = Loadable(lazy(() => import('../views/purches managenment/purchase order/purchaseorderadd')))
+const Purchaseorderlist = Loadable(lazy(() => import('../views/purches managenment/purchase order/purchaseorderlist')))
+const Purchaseorderview = Loadable(lazy(() => import('../views/purches managenment/purchase order/purchaseorderview')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of delivery challan +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Deliverychallan = Loadable(lazy(() => import('../views/sale managenment/Dileverychallan/dileverychalln')));
-const DileveryChallanList = Loadable(lazy(() => import('../views/sale managenment/Dileverychallan/dileverychallanlist')));
-const DileveryChallanView = Loadable(lazy(() => import('../views/sale managenment/Dileverychallan/dileverychallanview')));
+const Deliverychallan = Loadable(lazy(() => import('../views/sale managenment/Dileverychallan/dileverychalln')))
+const DileveryChallanList = Loadable(lazy(() => import('../views/sale managenment/Dileverychallan/dileverychallanlist')))
+const DileveryChallanView = Loadable(lazy(() => import('../views/sale managenment/Dileverychallan/dileverychallanview')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of Debit note +++++++++++++++++++++++++++++++++++++++++++++++++++
-const DebitNote = Loadable(lazy(() => import('../views/sale managenment/Debit note/debitnote')));
-const Debitnotelist = Loadable(lazy(() => import('../views/sale managenment/Debit note/debitnotelist')));
-const Debitnoteview = Loadable(lazy(() => import('../views/sale managenment/Debit note/debitnoteview')));
+const DebitNote = Loadable(lazy(() => import('../views/sale managenment/Debit note/debitnote')))
+const Debitnotelist = Loadable(lazy(() => import('../views/sale managenment/Debit note/debitnotelist')))
+const Debitnoteview = Loadable(lazy(() => import('../views/sale managenment/Debit note/debitnoteview')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of Debit note cash +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Debitnotecash = Loadable(lazy(() => import('../views/sale managenment/Debit note cash/debitnotecash')));
-const Debitnotecashlist = Loadable(lazy(() => import('../views/sale managenment/Debit note cash/debitnotecashlist')));
-const Debitnotecashview = Loadable(lazy(() => import('../views/sale managenment/Debit note cash/debitnotecashview')));
+const Debitnotecash = Loadable(lazy(() => import('../views/sale managenment/Debit note cash/debitnotecash')))
+const Debitnotecashlist = Loadable(lazy(() => import('../views/sale managenment/Debit note cash/debitnotecashlist')))
+const Debitnotecashview = Loadable(lazy(() => import('../views/sale managenment/Debit note cash/debitnotecashview')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of credit note +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Creditnotecash = Loadable(lazy(() => import('../views/sale managenment/Credit note cash/creditnotecash')));
-const Creditnotecashlist = Loadable(lazy(() => import('../views/sale managenment/Credit note cash/creditnotecashlist')));
-const CreditnotecashView = Loadable(lazy(() => import('../views/sale managenment/Credit note cash/creditnotecashview')));
+const Creditnotecash = Loadable(lazy(() => import('../views/sale managenment/Credit note cash/creditnotecash')))
+const Creditnotecashlist = Loadable(lazy(() => import('../views/sale managenment/Credit note cash/creditnotecashlist')))
+const CreditnotecashView = Loadable(lazy(() => import('../views/sale managenment/Credit note cash/creditnotecashview')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of credit note +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Creditnote = Loadable(lazy(() => import('../views/sale managenment/Credit note/creditnote')));
-const Creditnotelist = Loadable(lazy(() => import('../views/sale managenment/Credit note/creditnotelist')));
-const CreditnoteView = Loadable(lazy(() => import('../views/sale managenment/Credit note/creditnoteview')));
+const Creditnote = Loadable(lazy(() => import('../views/sale managenment/Credit note/creditnote')))
+const Creditnotelist = Loadable(lazy(() => import('../views/sale managenment/Credit note/creditnotelist')))
+const CreditnoteView = Loadable(lazy(() => import('../views/sale managenment/Credit note/creditnoteview')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of sales invoice +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Salesinvoice = Loadable(lazy(() => import('../views/sale managenment/Sales invoice/salesinvoice')));
-const Salesinvoicelist = Loadable(lazy(() => import('../views/sale managenment/Sales invoice/salesinvoicelist')));
-const Salesinvoiceview = Loadable(lazy(() => import('../views/sale managenment/Sales invoice/salesinvoiceview')));
+const Salesinvoice = Loadable(lazy(() => import('../views/sale managenment/Sales invoice/salesinvoice')))
+const Salesinvoicelist = Loadable(lazy(() => import('../views/sale managenment/Sales invoice/salesinvoicelist')))
+const Salesinvoiceview = Loadable(lazy(() => import('../views/sale managenment/Sales invoice/salesinvoiceview')))
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Order processing ++++++++++++++++++++++++
-const Orderprocessing = Loadable(lazy(() => import('../views/sale managenment/Order processing/orderprocessing')));
-const Orderprocessinglist = Loadable(lazy(() => import('../views/sale managenment/Order processing/orderprocessinglist')));
+const Orderprocessing = Loadable(lazy(() => import('../views/sale managenment/Order processing/orderprocessing')))
+const Orderprocessinglist = Loadable(lazy(() => import('../views/sale managenment/Order processing/orderprocessinglist')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of purchase bill +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Purchaseinvoice = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice/purchaseinvoice')));
-const PurchaseinvoiceList = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice/purchaseinvoicelist')));
-const Purchaseinvoiceview = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice/purchaseinvoiceview')));
+const Purchaseinvoice = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice/purchaseinvoice')))
+const PurchaseinvoiceList = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice/purchaseinvoicelist')))
+const Purchaseinvoiceview = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice/purchaseinvoiceview')))
 
 // +++++++++++++++++++++++++++++++++++++++++ Routes of purchasse bill cash ++++++++++++++++++++++++++++++++++++++++++++
-const Purchaseinvoicecash = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice cash/purchaseinvoicecash')));
-const Purchaseinvoicecashlist = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice cash/purchaseinvoicecashlist')));
-const Purchaseinvoicecashview = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice cash/purchaseinvoicecashview')));
+const Purchaseinvoicecash = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice cash/purchaseinvoicecash')))
+const Purchaseinvoicecashlist = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice cash/purchaseinvoicecashlist')))
+const Purchaseinvoicecashview = Loadable(lazy(() => import('../views/purches managenment/Purchase invoice cash/purchaseinvoicecashview')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of company +++++++++++++++++++++++++++++++++++++++++++++++++++
-const CompanyList = Loadable(lazy(() => import('../views/company managenment/companylist')));
-const AddCompanyForm = Loadable(lazy(() => import('../views/company managenment/addcompany')));
-const CompanyviewPage = Loadable(lazy(() => import('../views/company managenment/companyview')));
-const Singlebankledgerlist = Loadable(lazy(() => import('../views/company managenment/singlebankledger')));
+const CompanyList = Loadable(lazy(() => import('../views/company managenment/companylist')))
+const AddCompanyForm = Loadable(lazy(() => import('../views/company managenment/addcompany')))
+const CompanyviewPage = Loadable(lazy(() => import('../views/company managenment/companyview')))
+const Singlebankledgerlist = Loadable(lazy(() => import('../views/company managenment/singlebankledger')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of production +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Billofmateriallist = Loadable(lazy(() => import('../views/production managenment/Bill Of Material/billofmateriallist')));
-const Addbillofmaterial = Loadable(lazy(() => import('../views/production managenment/Bill Of Material/addbillofmaterial')));
-const Bomview = Loadable(lazy(() => import('../views/production managenment/Bill Of Material/billofmaterialview')));
-const Product = Loadable(lazy(() => import('../views/production managenment/product')));
+const Billofmateriallist = Loadable(lazy(() => import('../views/production managenment/Bill Of Material/billofmateriallist')))
+const Addbillofmaterial = Loadable(lazy(() => import('../views/production managenment/Bill Of Material/addbillofmaterial')))
+const Bomview = Loadable(lazy(() => import('../views/production managenment/Bill Of Material/billofmaterialview')))
+const Product = Loadable(lazy(() => import('../views/production managenment/product')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++++ Route permission +++++++++++++++++++++++++++++++++++
-const Permission = Loadable(lazy(() => import('../views/permission managenment/permission')));
-const User = Loadable(lazy(() => import('../views/permission managenment/adduser')));
-const UserList = Loadable(lazy(() => import('../views/permission managenment/userlist')));
-const Userviewpage = Loadable(lazy(() => import('../views/permission managenment/userview')));
+const Permission = Loadable(lazy(() => import('../views/permission managenment/permission')))
+const User = Loadable(lazy(() => import('../views/permission managenment/adduser')))
+const UserList = Loadable(lazy(() => import('../views/permission managenment/userlist')))
+const Userviewpage = Loadable(lazy(() => import('../views/permission managenment/userview')))
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++ Product ++++++++++++++++++++++++++++++++++++++++
-const ProductList = Loadable(lazy(() => import('../views/production managenment/Product/productList')));
-const Productview = Loadable(lazy(() => import('../views/production managenment/Product/productview')));
+const ProductList = Loadable(lazy(() => import('../views/production managenment/Product/productList')))
+const Productview = Loadable(lazy(() => import('../views/production managenment/Product/productview')))
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++ Raw material product ++++++++++++++++++++++++++++++++++++
-const Rawmateriallist = Loadable(lazy(() => import('../views/production managenment/Raw material/rawmateriallist')));
-const Rawmaterialview = Loadable(lazy(() => import('../views/production managenment/Raw material/rawmaterialview')));
+const Rawmateriallist = Loadable(lazy(() => import('../views/production managenment/Raw material/rawmateriallist')))
+const Rawmaterialview = Loadable(lazy(() => import('../views/production managenment/Raw material/rawmaterialview')))
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++ Spare product ++++++++++++++++++++++++++++++++++++
-const Sparelist = Loadable(lazy(() => import('../views/production managenment/Spare/sparelist')));
-const Spareview = Loadable(lazy(() => import('../views/production managenment/Spare/spareview')));
+const Sparelist = Loadable(lazy(() => import('../views/production managenment/Spare/sparelist')))
+const Spareview = Loadable(lazy(() => import('../views/production managenment/Spare/spareview')))
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++ Customer ++++++++++++++++++++++++++++++++++++++++++++++++
-const CustomerList = Loadable(lazy(() => import('../views/general managenment/Customer/partylist')));
-const Customerview = Loadable(lazy(() => import('../views/general managenment/Customer/partyview')));
+const CustomerList = Loadable(lazy(() => import('../views/general managenment/Customer/partylist')))
+const Customerview = Loadable(lazy(() => import('../views/general managenment/Customer/partyview')))
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++ Stoke +++++++++++++++++++++++++++++++++++++++
-const LowStock = Loadable(lazy(() => import('../views/stock managenment/lowStock')));
+const LowStock = Loadable(lazy(() => import('../views/stock managenment/lowStock')))
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++ Machine +++++++++++++++++++++++++++++++++
-const Machineadd = Loadable(lazy(() => import('../views/machine managenment/machineadd')));
-const MachineList = Loadable(lazy(() => import('../views/machine managenment/machinelist')));
-const Machinescheduleadd = Loadable(lazy(() => import('../views/machine managenment/machineschedule/machinescheduleadd')));
-const Machineschedulelist = Loadable(lazy(() => import('../views/machine managenment/machineschedule/machineschedulelist')));
+const Machineadd = Loadable(lazy(() => import('../views/machine managenment/machineadd')))
+const MachineList = Loadable(lazy(() => import('../views/machine managenment/machinelist')))
+const Machinescheduleadd = Loadable(lazy(() => import('../views/machine managenment/machineschedule/machinescheduleadd')))
+const Machineschedulelist = Loadable(lazy(() => import('../views/machine managenment/machineschedule/machineschedulelist')))
 
-const ReportPage = Loadable(lazy(() => import('../views/production managenment/productionreport')));
+const ReportPage = Loadable(lazy(() => import('../views/production managenment/productionreport')))
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Employee ++++++++++++++++++++++++
-const EmployeePage = Loadable(lazy(() => import('../views/employees management/employeelist')));
-const Employeeadd = Loadable(lazy(() => import('../views/employees management/employeeadd')));
-const Employeeview = Loadable(lazy(() => import('../views/employees management/employeeview')));
+const EmployeePage = Loadable(lazy(() => import('../views/employees management/employeelist')))
+const Employeeadd = Loadable(lazy(() => import('../views/employees management/employeeadd')))
+const Employeeview = Loadable(lazy(() => import('../views/employees management/employeeview')))
 
-const BonusConfigPage = Loadable(lazy(() => import('../views/employees management/bonus config/bonusConfig')));
-const PenaltyConfigPage = Loadable(lazy(() => import('../views/employees management/penalty config/penaltyConfig')));
-const HolidayConfigPage = Loadable(lazy(() => import('../views/employees management/holiday config/holidayConfig')));
-const AddHolidayPage = Loadable(lazy(() => import('../views/employees management/holiday config/addHoliday')));
-const AttendeesTypeConfigPage = Loadable(lazy(() => import('../views/employees management/attendees type/attendeesTypeConfig')));
-const AddAttendeesTypePage = Loadable(lazy(() => import('../views/employees management/attendees type/addAttendeesType')));
-const EmployeeSalary = Loadable(lazy(() => import('../views/employees management/employeeSalary')));
-const EmployeeShift = Loadable(lazy(() => import('../views/employees management/shift config/shiftlist')));
-const Attendees = Loadable(lazy(() => import('../views/employees management/attendees')));
-const EmployeeDetails = Loadable(lazy(() => import('../views/employees management/employeeDetails')));
+const BonusConfigPage = Loadable(lazy(() => import('../views/employees management/bonus config/bonusConfig')))
+const PenaltyConfigPage = Loadable(lazy(() => import('../views/employees management/penalty config/penaltyConfig')))
+const HolidayConfigPage = Loadable(lazy(() => import('../views/employees management/holiday config/holidayConfig')))
+const AddHolidayPage = Loadable(lazy(() => import('../views/employees management/holiday config/addHoliday')))
+const AttendeesTypeConfigPage = Loadable(lazy(() => import('../views/employees management/attendees type/attendeesTypeConfig')))
+const AddAttendeesTypePage = Loadable(lazy(() => import('../views/employees management/attendees type/addAttendeesType')))
+const EmployeeSalary = Loadable(lazy(() => import('../views/employees management/employeeSalary')))
+const EmployeeShift = Loadable(lazy(() => import('../views/employees management/shift config/shiftlist')))
+const Attendees = Loadable(lazy(() => import('../views/employees management/attendees')))
+const EmployeeDetails = Loadable(lazy(() => import('../views/employees management/employeeDetails')))
 
 // const { canViewAllProformainvoiceQuotation } = useCan();
 // ==============================|| MAIN ROUTES ||============================== //
@@ -416,7 +417,12 @@ const MainRoutes = {
     // +++++++++++++++++++++++++++++++++++++++++ routes of item group ++++++++++++++++++++
     {
       path: '/itemcategorylist',
-      element: <ItemcategoryList />
+      element: <ProtectedRoute element={ItemcategoryList} resource="Item Category" permissionName="view_all_itemCategory" />
+    },
+
+    {
+      path: '/itemsubcategorylist',
+      element: <ProtectedRoute element={ItemSubCategoryList} resource="Item Sub Category" permissionName="view_all_itemSubCategory" />
     },
 
     // ++++++++++++++++++++++++++++++++++++++++++++ Routes of credit note cash +++++++++++++++++++++++++++++++++++++++++++++++++++

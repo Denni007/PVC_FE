@@ -274,6 +274,16 @@ const MenuItem = () => {
     'view_all_itemCategory_group'
   ]);
 
+  // const hasAllPermissionsItemSubCategory = checkAllPermissions('Item Sub Category', [
+  //   'create_itemSubCategory',
+  //   'update_itemSubCategory',
+  //   'delete_itemSubCategory',
+  //   'view_single_itemSubCategory',
+  //   'view_all_itemSubCategory',
+  //   'view_all_itemSubCategory_category'
+  // ]);
+
+
   const hasAllPermissionsOp = checkAllPermissions('Order Processing', [
     'create_order_processing',
     'update_order_processing',
@@ -355,31 +365,31 @@ const MenuItem = () => {
       },
       createConfig() === 'C' && createConfig1() === 'Super Admin'
         ? {
-            type: 'group',
-            icon: icons['NavigationOutlinedIcon'],
-            children: [
-              {
-                id: 'auth',
-                title: 'Authentication',
-                type: 'collapse',
-                icon: icons['SecurityOutlinedIcon'],
-                children: [
-                  {
-                    id: 'permission',
-                    title: 'Permission',
-                    type: 'item',
-                    url: '/permission'
-                  },
-                  {
-                    id: 'adduser',
-                    title: 'User Management',
-                    type: 'item',
-                    url: '/userlist'
-                  }
-                ]
-              }
-            ]
-          }
+          type: 'group',
+          icon: icons['NavigationOutlinedIcon'],
+          children: [
+            {
+              id: 'auth',
+              title: 'Authentication',
+              type: 'collapse',
+              icon: icons['SecurityOutlinedIcon'],
+              children: [
+                {
+                  id: 'permission',
+                  title: 'Permission',
+                  type: 'item',
+                  url: '/permission'
+                },
+                {
+                  id: 'adduser',
+                  title: 'User Management',
+                  type: 'item',
+                  url: '/userlist'
+                }
+              ]
+            }
+          ]
+        }
         : {},
       {
         type: 'group',
@@ -393,79 +403,79 @@ const MenuItem = () => {
             children: [
               createConfig() === 'C'
                 ? {
-                    id: 'Cash',
-                    title: 'Cash',
-                    type: 'collapse',
-                    icon: icons['PaymentsIcon'],
-                    children: [
-                      hasAllPermissionscashbook && {
-                        id: 'Cash Book',
-                        title: 'Cash Book',
-                        type: 'item',
-                        url: '/cashbook'
-                      },
-                      hasAllPermissionspassbook && {
-                        id: 'Pass Book',
-                        title: 'Pass Book',
-                        type: 'item',
-                        url: '/passbook'
-                      },
-                      hasAllPermissionsWallet && {
-                        id: 'Wallet',
-                        title: 'Wallet',
-                        type: 'item',
-                        url: '/wallet'
-                      },
-                      hasAllPermissionSalesCash && {
-                        id: 'sales cash',
-                        title: 'Sales Cash',
-                        type: 'item',
-                        url: '/salescashlist'
-                      },
-                      hasAllPermissionPurchaseinvoiceCash && {
-                        id: 'Purchase Cash',
-                        title: 'Purchase Cash',
-                        type: 'item',
-                        url: '/purchaseinvoicecashList'
-                      },
-                      hasAllPermissionExpense && {
-                        id: 'expense',
-                        title: 'Expense',
-                        type: 'item',
-                        url: '/expenselist'
-                      },
-                      hasAllPermissionPaymentCash && {
-                        id: 'payment Cash',
-                        title: 'Payment',
-                        type: 'item',
-                        url: '/paymentCashlist'
-                      },
-                      hasAllPermissionPaymentRecieveCash && {
-                        id: 'Receipt cash',
-                        title: 'Receipt',
-                        type: 'item',
-                        url: '/paymentrecieveList'
-                      },
-                      {
-                        id: 'Report',
-                        title: 'Report',
-                        type: 'item',
-                        url: '/cashreports'
-                      },
-                      hasAllPermissionsDebitnotecash && {
-                        id: 'Debit note cash',
-                        title: 'Debit Note Cash',
-                        type: 'item',
-                        url: '/debitnotecashlist'
-                      },
-                      hasAllPermissionsCreditnotecash && {
-                        id: 'Credit note cash',
-                        title: 'Credit Note Cash',
-                        type: 'item',
-                        url: '/creditnotecashlist'
-                      }
-                    ]
-                  }
+                  id: 'Cash',
+                  title: 'Cash',
+                  type: 'collapse',
+                  icon: icons['PaymentsIcon'],
+                  children: [
+                    hasAllPermissionscashbook && {
+                      id: 'Cash Book',
+                      title: 'Cash Book',
+                      type: 'item',
+                      url: '/cashbook'
+                    },
+                    hasAllPermissionspassbook && {
+                      id: 'Pass Book',
+                      title: 'Pass Book',
+                      type: 'item',
+                      url: '/passbook'
+                    },
+                    hasAllPermissionsWallet && {
+                      id: 'Wallet',
+                      title: 'Wallet',
+                      type: 'item',
+                      url: '/wallet'
+                    },
+                    hasAllPermissionSalesCash && {
+                      id: 'sales cash',
+                      title: 'Sales Cash',
+                      type: 'item',
+                      url: '/salescashlist'
+                    },
+                    hasAllPermissionPurchaseinvoiceCash && {
+                      id: 'Purchase Cash',
+                      title: 'Purchase Cash',
+                      type: 'item',
+                      url: '/purchaseinvoicecashList'
+                    },
+                    hasAllPermissionExpense && {
+                      id: 'expense',
+                      title: 'Expense',
+                      type: 'item',
+                      url: '/expenselist'
+                    },
+                    hasAllPermissionPaymentCash && {
+                      id: 'payment Cash',
+                      title: 'Payment',
+                      type: 'item',
+                      url: '/paymentCashlist'
+                    },
+                    hasAllPermissionPaymentRecieveCash && {
+                      id: 'Receipt cash',
+                      title: 'Receipt',
+                      type: 'item',
+                      url: '/paymentrecieveList'
+                    },
+                    {
+                      id: 'Report',
+                      title: 'Report',
+                      type: 'item',
+                      url: '/cashreports'
+                    },
+                    hasAllPermissionsDebitnotecash && {
+                      id: 'Debit note cash',
+                      title: 'Debit Note Cash',
+                      type: 'item',
+                      url: '/debitnotecashlist'
+                    },
+                    hasAllPermissionsCreditnotecash && {
+                      id: 'Credit note cash',
+                      title: 'Credit Note Cash',
+                      type: 'item',
+                      url: '/creditnotecashlist'
+                    }
+                  ]
+                }
                 : {},
               // createConfig() === 'C'
               //   ? {
@@ -565,63 +575,63 @@ const MenuItem = () => {
       },
       createConfig() === 'C'
         ? {
-            type: 'group',
-            icon: icons['ProductionQuantityLimitsIcon'],
-            children: [
-              {
-                id: 'Production Management',
-                title: 'Production Management',
-                type: 'collapse',
-                icon: icons['ProductionQuantityLimitsIcon'],
-                children: [
-                  // {
-                  // id: 'Items',
-                  // title: 'Items',
-                  // type: 'collapse',
-                  // icon: icons['ExtensionIcon'],
-                  // children: [
-                  hasAllPermissionsItem && {
-                    id: 'Item List',
-                    title: 'Item',
-                    type: 'item',
-                    url: '/productlist'
-                  },
-                  // hasAllPermissionsItem && {
-                  //   id: 'Raw Material List',
-                  //   title: 'Raw Material',
-                  //   type: 'item',
-                  //   url: '/rawmateriallist'
-                  // },
-                  // hasAllPermissionsItem && {
-                  //   id: 'Spare',
-                  //   title: 'Spare',
-                  //   type: 'item',
-                  //   url: '/sparelist'
-                  // }
-                  // ]
-                  // },
-                  // hasAllPermissionsOp && {
-                  //   id: 'Order Processing',
-                  //   title: 'Order Processing',
-                  //   type: 'item',
-                  //   url: '/orderprocessing'
-                  // },
-                  hasAllPermissionsBom && {
-                    id: 'production',
-                    title: 'Production',
-                    type: 'item',
-                    url: '/billofmateriallist'
-                  },
-                  hasAllPermissionsOp && {
-                    id: 'order processing',
-                    title: 'Order Processing',
-                    type: 'item',
-                    url: '/orderprocessinglist'
-                  }
-                ]
-              }
-            ]
-          }
+          type: 'group',
+          icon: icons['ProductionQuantityLimitsIcon'],
+          children: [
+            {
+              id: 'Production Management',
+              title: 'Production Management',
+              type: 'collapse',
+              icon: icons['ProductionQuantityLimitsIcon'],
+              children: [
+                // {
+                // id: 'Items',
+                // title: 'Items',
+                // type: 'collapse',
+                // icon: icons['ExtensionIcon'],
+                // children: [
+                hasAllPermissionsItem && {
+                  id: 'Item List',
+                  title: 'Item',
+                  type: 'item',
+                  url: '/productlist'
+                },
+                // hasAllPermissionsItem && {
+                //   id: 'Raw Material List',
+                //   title: 'Raw Material',
+                //   type: 'item',
+                //   url: '/rawmateriallist'
+                // },
+                // hasAllPermissionsItem && {
+                //   id: 'Spare',
+                //   title: 'Spare',
+                //   type: 'item',
+                //   url: '/sparelist'
+                // }
+                // ]
+                // },
+                // hasAllPermissionsOp && {
+                //   id: 'Order Processing',
+                //   title: 'Order Processing',
+                //   type: 'item',
+                //   url: '/orderprocessing'
+                // },
+                hasAllPermissionsBom && {
+                  id: 'production',
+                  title: 'Production',
+                  type: 'item',
+                  url: '/billofmateriallist'
+                },
+                hasAllPermissionsOp && {
+                  id: 'order processing',
+                  title: 'Order Processing',
+                  type: 'item',
+                  url: '/orderprocessinglist'
+                }
+              ]
+            }
+          ]
+        }
         : {},
       {
         type: 'group',
@@ -726,25 +736,25 @@ const MenuItem = () => {
       },
       createConfig() === 'C'
         ? {
-            type: 'group',
-            icon: icons['PropaneTankIcon'],
-            children: [
-              {
-                id: 'auth',
-                title: 'Stock Management',
-                type: 'collapse',
-                icon: icons['PropaneTankIcon'],
-                children: [
-                  {
-                    id: 'Stoke',
-                    title: 'Stock List',
-                    type: 'item',
-                    url: '/stocklist'
-                  }
-                ]
-              }
-            ]
-          }
+          type: 'group',
+          icon: icons['PropaneTankIcon'],
+          children: [
+            {
+              id: 'auth',
+              title: 'Stock Management',
+              type: 'collapse',
+              icon: icons['PropaneTankIcon'],
+              children: [
+                {
+                  id: 'Stoke',
+                  title: 'Stock List',
+                  type: 'item',
+                  url: '/stocklist'
+                }
+              ]
+            }
+          ]
+        }
         : {},
       {
         type: 'group',
@@ -823,6 +833,12 @@ const MenuItem = () => {
                 title: 'Item Category',
                 type: 'item',
                 url: '/itemcategorylist'
+              },
+              {
+                id: 'Item Sub Category',
+                title: 'Item Sub Category',
+                type: 'item',
+                url: '/itemsubcategorylist'
               },
               // {
               //   id: 'Wastage',
