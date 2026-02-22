@@ -30,7 +30,7 @@ const columns = [
   { id: 'action', label: 'Action', align: 'center' }
 ];
 
-const Product = (GroupId, CategoryId, Query) => {
+const Product = ({ GroupId, CategoryId, SubCategoryId, Query }) => {
   const { canUpdateStoke, canViewStoke } = useCan();
   const [stoke, setStoke] = useState([]);
   const [page, setPage] = useState(0);
@@ -69,9 +69,10 @@ const Product = (GroupId, CategoryId, Query) => {
       };
       await dispatch(updateStoke(selectedRow.id, paylod, navigate));
       const query = {
-        groupId: GroupId.GroupId,
-        categoryId: GroupId.CategoryId,
-        search: GroupId.Query
+        groupId: GroupId,
+        categoryId: CategoryId,
+        subCategoryId: SubCategoryId,
+        search: Query
       };
       const updatedData = await dispatch(getAllStoke(query));
       setStoke(updatedData);
@@ -96,9 +97,10 @@ const Product = (GroupId, CategoryId, Query) => {
     const fetchStoke = async () => {
       try {
         const query = {
-          groupId: GroupId.GroupId,
-          categoryId: GroupId.CategoryId,
-          search: GroupId.Query
+          groupId: GroupId,
+          categoryId: CategoryId,
+          subCategoryId: SubCategoryId,
+          search: Query
         };
         const data = await dispatch(getAllStoke(query));
         setStoke(data);
@@ -110,7 +112,7 @@ const Product = (GroupId, CategoryId, Query) => {
       }
     };
     fetchStoke();
-  }, [dispatch, navigate, GroupId, CategoryId, Query]);
+  }, [dispatch, navigate, GroupId, CategoryId, SubCategoryId, Query]);
 
   return (
     <Card style={{ width: 'auto', padding: '20px' }}>

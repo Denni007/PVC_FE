@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Select from 'react-select';
 import AnchorProductDrawer from '../../../component/productadd';
 import { useMediaQuery } from '@mui/material';
-import { createBom, fetchAllProducts, fetchAllWastage, getAllBom, updateBom, viewSingleBom } from 'store/thunk';
+import { createBom, fetchAllWastage, getAllBom, updateBom, viewSingleBom, getAllFinishedGoods, getAllRawMaterials } from 'store/thunk';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
@@ -136,7 +136,7 @@ const Addbillofmaterial = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productResponse = await dispatch(fetchAllProducts());
+        const productResponse = await dispatch(getAllFinishedGoods());
         if (Array.isArray(productResponse)) {
           const options = productResponse.map((product) => ({
             value: product.id,
@@ -145,7 +145,7 @@ const Addbillofmaterial = () => {
             unit: product.unit
           }));
           setProductOptions([{ value: 'new', label: 'Create New Item' }, ...options]);
-          const product = await dispatch(fetchAllProducts());
+          const product = await dispatch(getAllRawMaterials());
           if (Array.isArray(product)) {
             const rowoptions = product.map((product) => ({
               value: product.id,

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Product from './product';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
-import { fetchAllItemcategory, fetchAllItemGroup } from 'store/thunk';
+import { fetchAllItemcategory, fetchAllItemGroup, getAllItemSubCategoryByCategory } from 'store/thunk';
 
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
@@ -56,6 +56,9 @@ const LowStock = () => {
   const [category, setcategory] = useState([]);
   const [categoryId, setcategoryId] = useState(null);
   const [categoryname, setcategoryname] = useState(null);
+  const [subcategory, setsubcategory] = useState([]);
+  const [subcategoryId, setsubcategoryId] = useState(null);
+  const [subcategoryname, setsubcategoryname] = useState(null);
   const [query, setQuery] = useState('');
   const dispatch = useDispatch();
 
@@ -84,6 +87,22 @@ const LowStock = () => {
     data();
   }, [dispatch, groupId]);
 
+  useEffect(() => {
+    const datasubcategory = async () => {
+      if (categoryId) {
+        const Response = await dispatch(getAllItemSubCategoryByCategory(categoryId));
+        if (Array.isArray(Response)) {
+          const options = Response.map((product) => ({
+            value: product.id,
+            label: product.name
+          }));
+          setsubcategory([...options]);
+        }
+      }
+    };
+    datasubcategory();
+  }, [dispatch, categoryId]);
+
   const handleSearch = (event) => {
     setQuery(event.target.value);
   };
@@ -102,6 +121,13 @@ const LowStock = () => {
     }
   };
 
+  const handleSelectsubcategoryChange = (selectedOption) => {
+    if (selectedOption) {
+      setsubcategoryId(selectedOption.value);
+      setsubcategoryname(selectedOption.label);
+    }
+  };
+
   return (
     <Paper style={{ width: 'auto', padding: '20px' }}>
       <TableContainer>
@@ -111,7 +137,7 @@ const LowStock = () => {
               Product
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <Select
               styles={{ container: (provided) => ({ ...provided, width: '80%' }) }}
               options={product}
@@ -120,13 +146,22 @@ const LowStock = () => {
               placeholder="Item Group"
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <Select
               styles={{ container: (provided) => ({ ...provided, width: '80%' }) }}
               options={category}
               onChange={handleSelectcategoryChange}
               value={categoryId ? { value: categoryId, label: categoryname } : null}
               placeholder="Item Category"
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Select
+              styles={{ container: (provided) => ({ ...provided, width: '80%' }) }}
+              options={subcategory}
+              onChange={handleSelectsubcategoryChange}
+              value={subcategoryId ? { value: subcategoryId, label: subcategoryname } : null}
+              placeholder="Item Sub Category"
             />
           </Grid>
           <Grid item xs={12} sm={3}>
@@ -138,7 +173,7 @@ const LowStock = () => {
             </Search>
           </Grid>
           <Grid item xs={12}>
-            <Product GroupId={groupId} CategoryId={categoryId} Query={query} />
+            <Product GroupId={groupId} CategoryId={categoryId} SubCategoryId={subcategoryId} Query={query} />
           </Grid>
         </Grid>
       </TableContainer>

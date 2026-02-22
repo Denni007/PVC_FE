@@ -39,6 +39,9 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
   const [lowstock, setLowStock] = React.useState(false);
   const [cess, setCess] = React.useState(true);
   const [isWastage, setIsWastage] = React.useState(false);
+  const [isFinishedGoods, setIsFinishedGoods] = React.useState(false);
+  const [isRawMaterial, setIsRawMaterial] = React.useState(false);
+  const [isSpareItem, setIsSpareItem] = React.useState(false);
   const [selectedItemGroup, setSelectedItemGroup] = React.useState('');
   const [itemGroupDrawerOpen, setItemGroupDrawerOpen] = React.useState(false);
   const [itemCategoryDrawerOpen, setItemCategoryDrawerOpen] = React.useState(false);
@@ -108,6 +111,18 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
 
   const handleWastage = (e) => {
     setIsWastage(e.target.value === 'true');
+  };
+
+  const handleFinishedGoods = (e) => {
+    setIsFinishedGoods(e.target.value === 'true');
+  };
+
+  const handleRawMaterial = (e) => {
+    setIsRawMaterial(e.target.value === 'true');
+  };
+
+  const handleSpareItem = (e) => {
+    setIsSpareItem(e.target.value === 'true');
   };
 
   React.useEffect(() => {
@@ -190,25 +205,37 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
     const fetchData = async () => {
       try {
         if (id) {
-          const response = await dispatch(viewProduct(id));
-          const productData = response;
-          setFormData({
-            ...productData,
-            itemGroupId: productData.itemGroupId || '',
-            itemCategoryId: productData.itemCategoryId || '',
-            itemSubCategoryId: productData.itemSubCategoryId || '',
-            weight: productData.weight
-          });
-          setOpeningStock(productData.openingstock);
-          setNagativeQty(productData.nagativeqty);
-          setLowStock(productData.lowstock);
-          setCess(productData.cess);
-          setIsWastage(productData.isWastage);
-          setItemType(productData.itemtype);
-          setSelectedItemGroup(productData.itemGroupId);
-          setItemgroupname(productData.itemGroup?.name);
-          setItemcategoryname(productData.itemCategory?.name);
-          setItemSubCategoryName(productData.itemSubCategory?.name || '');
+          const productData = await dispatch(viewProduct(id));
+          if (productData) {
+            setFormData({
+              productname: productData.productname || '',
+              description: productData.description || '',
+              itemGroupId: productData.itemGroupId || '',
+              itemCategoryId: productData.itemCategoryId || '',
+              itemSubCategoryId: productData.itemSubCategoryId || '',
+              unit: productData.unit || '',
+              salesprice: productData.salesprice || 0,
+              purchaseprice: productData.purchaseprice || 0,
+              HSNcode: productData.HSNcode || 0,
+              gstrate: productData.gstrate || 0,
+              lowStockQty: productData.lowStockQty || null,
+              weight: productData.weight || ''
+            });
+
+            setOpeningStock(productData.openingstock || true);
+            setNagativeQty(productData.nagativeqty || false);
+            setLowStock(productData.lowstock || false);
+            setCess(productData.cess || true);
+            setIsWastage(productData.wastage || false);
+            setIsFinishedGoods(productData.finished_goods || false);
+            setIsRawMaterial(productData.raw_material || false);
+            setIsSpareItem(productData.spare || false);
+            setItemType(productData.itemtype || 'Product');
+            setSelectedItemGroup(productData.itemGroupId || '');
+            setItemgroupname(productData.itemGroup?.name || '');
+            setItemcategoryname(productData.itemCategory?.name || '');
+            setItemSubCategoryName(productData.itemSubCategory?.name || '');
+          }
         } else {
           setFormData({
             productname: '',
@@ -228,6 +255,10 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
           setNagativeQty(false);
           setLowStock(false);
           setCess(true);
+          setIsWastage(false);
+          setIsFinishedGoods(false);
+          setIsRawMaterial(false);
+          setIsSpareItem(false);
           setItemType('Product');
           setSelectedItemGroup('');
           setItemgroupname('');
@@ -257,7 +288,10 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
         nagativeqty,
         lowstock,
         cess,
-        isWastage
+        isWastage,
+        is_finished_goods: isFinishedGoods,
+        is_raw_material: isRawMaterial,
+        is_spare_item: isSpareItem
       };
       if (id) {
         const newdata = await dispatch(updateProduct(id, data, navigate));
@@ -484,7 +518,7 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
             <Typography variant="subtitle1">
               Would you like to add batch wise opening stock?
             </Typography>
-            <RadioGroup row value={openingstock} onChange={handleOpeningStock}>
+            <RadioGroup row value={String(openingstock)} onChange={handleOpeningStock}>
               <FormControlLabel value="true" control={<Radio />} label="Yes" />
               <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
@@ -493,7 +527,7 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
             <Typography variant="subtitle1">
               Negative Qty Allowed :<span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
-            <RadioGroup row value={nagativeqty} onChange={handleNegativeQty}>
+            <RadioGroup row value={String(nagativeqty)} onChange={handleNegativeQty}>
               <FormControlLabel value="true" control={<Radio />} label="Yes" />
               <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
@@ -502,7 +536,7 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
             <Typography variant="subtitle1">
               Low Stock Warning : <span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
-            <RadioGroup row value={lowstock} onChange={handleLowStock}>
+            <RadioGroup row value={String(lowstock)} onChange={handleLowStock}>
               <FormControlLabel value="true" control={<Radio />} label="Yes" />
               <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
@@ -531,14 +565,35 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">Cess Enable</Typography>
-            <RadioGroup row value={cess} onChange={handleCess}>
+            <RadioGroup row value={String(cess)} onChange={handleCess}>
               <FormControlLabel value="true" control={<Radio />} label="Yes" />
               <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">Is Wastage?</Typography>
-            <RadioGroup row value={isWastage} onChange={handleWastage}>
+            <RadioGroup row value={String(isWastage)} onChange={handleWastage}>
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
+            </RadioGroup>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">Is Finished Goods?</Typography>
+            <RadioGroup row value={String(isFinishedGoods)} onChange={handleFinishedGoods}>
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
+            </RadioGroup>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">Is Raw Material?</Typography>
+            <RadioGroup row value={String(isRawMaterial)} onChange={handleRawMaterial}>
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
+            </RadioGroup>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">Is Spare Item?</Typography>
+            <RadioGroup row value={String(isSpareItem)} onChange={handleSpareItem}>
               <FormControlLabel value="true" control={<Radio />} label="Yes" />
               <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>

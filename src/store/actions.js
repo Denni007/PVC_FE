@@ -868,6 +868,14 @@ export const GET_ALL_ADD_MAINTENANCE_REQUEST = 'GET_ALL_ADD_MAINTENANCE_REQUEST'
 export const GET_ALL_ADD_MAINTENANCE_SUCCESS = 'GET_ALL_ADD_MAINTENANCE_SUCCESS';
 export const GET_ALL_ADD_MAINTENANCE_FAILURE = 'GET_ALL_ADD_MAINTENANCE_FAILURE';
 
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++ RAW MATERIAL AND FINISHED GOODS +++++++++++++++++++++++++++
+export const FETCH_ALL_FINISHED_GOODS_REQUEST = 'FETCH_ALL_FINISHED_GOODS_REQUEST';
+export const FETCH_ALL_FINISHED_GOODS_SUCCESS = 'FETCH_ALL_FINISHED_GOODS_SUCCESS';
+export const FETCH_ALL_FINISHED_GOODS_FAILURE = 'FETCH_ALL_FINISHED_GOODS_FAILURE';
+export const FETCH_ALL_RAW_MATERIALS_REQUEST = 'FETCH_ALL_RAW_MATERIALS_REQUEST';
+export const FETCH_ALL_RAW_MATERIALS_SUCCESS = 'FETCH_ALL_RAW_MATERIALS_SUCCESS';
+export const FETCH_ALL_RAW_MATERIALS_FAILURE = 'FETCH_ALL_RAW_MATERIALS_FAILURE';
+
 // ###################################################################### LOGIN #####################################################################
 export const loginRequest = () => ({
   type: 'LOGIN_REQUEST'
@@ -3926,5 +3934,30 @@ export const fetchAllAddMaintenanceSuccess = (data) => ({
 });
 export const fetchAllAddMaintenanceFailure = (error) => ({
   type: 'GET_ALL_ADD_MAINTENANCE_FAILURE',
+  payload: error
+});
+
+// ++++++++++++++++++++++++++++++++++++++++++ RAW MATERIAL AND FINISHED GOODS ++++++++++++++
+
+export const fetchAllFinishedGoodsRequest = () => ({
+  type: FETCH_ALL_FINISHED_GOODS_REQUEST
+});
+export const fetchAllFinishedGoodsSuccess = (data) => ({
+  type: FETCH_ALL_FINISHED_GOODS_SUCCESS,
+  payload: data
+});
+export const fetchAllFinishedGoodsFailure = (error) => ({
+  type: FETCH_ALL_FINISHED_GOODS_FAILURE,
+  payload: error
+});
+export const fetchAllRawMaterialsRequest = () => ({
+  type: FETCH_ALL_RAW_MATERIALS_REQUEST
+});
+export const fetchAllRawMaterialsSuccess = (data) => ({
+  type: FETCH_ALL_RAW_MATERIALS_SUCCESS,
+  payload: data
+});
+export const fetchAllRawMaterialsFailure = (error) => ({
+  type: FETCH_ALL_RAW_MATERIALS_FAILURE,
   payload: error
 });

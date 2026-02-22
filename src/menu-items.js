@@ -274,14 +274,14 @@ const MenuItem = () => {
     'view_all_itemCategory_group'
   ]);
 
-  // const hasAllPermissionsItemSubCategory = checkAllPermissions('Item Sub Category', [
-  //   'create_itemSubCategory',
-  //   'update_itemSubCategory',
-  //   'delete_itemSubCategory',
-  //   'view_single_itemSubCategory',
-  //   'view_all_itemSubCategory',
-  //   'view_all_itemSubCategory_category'
-  // ]);
+  const hasAllPermissionsItemSubCategory = checkAllPermissions('Item Sub Category', [
+    'create_itemSubCategory',
+    'update_itemSubCategory',
+    'delete_itemSubCategory',
+    'view_single_itemSubCategory',
+    'view_all_itemSubCategory',
+    'view_all_itemSubCategory_category'
+  ]);
 
 
   const hasAllPermissionsOp = checkAllPermissions('Order Processing', [
@@ -834,7 +834,7 @@ const MenuItem = () => {
                 type: 'item',
                 url: '/itemcategorylist'
               },
-              {
+              hasAllPermissionsItemSubCategory && {
                 id: 'Item Sub Category',
                 title: 'Item Sub Category',
                 type: 'item',

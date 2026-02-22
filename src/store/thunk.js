@@ -821,7 +821,16 @@ import {
   ViewsingleAddMaintenanceFailure,
   fetchAllAddMaintenanceRequest,
   fetchAllAddMaintenanceSuccess,
-  fetchAllAddMaintenanceFailure
+  fetchAllAddMaintenanceFailure,
+
+  // RAW MATERIAL AND FINISHED GOODS +++++++++++++
+
+  fetchAllFinishedGoodsRequest,
+fetchAllFinishedGoodsSuccess,
+fetchAllFinishedGoodsFailure,
+fetchAllRawMaterialsRequest,
+fetchAllRawMaterialsSuccess,
+fetchAllRawMaterialsFailure
 } from './actions';
 import { jwtDecode } from 'jwt-decode';
 const createConfig = () => {
@@ -8405,6 +8414,52 @@ export const deleteAttendeesType = (attendeesTypeId, navigate) => {
           autoClose: 1000
         });
       }
+    }
+  };
+};
+
+// ++++++++++++++++++++++++++++++++++++++++++++ RAW MATERIAL AND FINISHED GOODS +++++++++++++++++++++++++++++++++++++++++++++++++++
+
+export const getAllFinishedGoods = (params = {}) => {
+  return async (dispatch) => {
+    dispatch(fetchAllFinishedGoodsRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/item/get_all_finished_goods`,
+        {
+          ...config,
+          params: params
+        }
+      );
+
+      const data = response.data.data;
+      dispatch(fetchAllFinishedGoodsSuccess(data));
+      return data;
+    } catch (error) {
+      dispatch(fetchAllFinishedGoodsFailure(error.message));
+    }
+  };
+};
+
+export const getAllRawMaterials = (params = {}) => {
+  return async (dispatch) => {
+    dispatch(fetchAllRawMaterialsRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/item/get_all_raw_materials`,
+        {
+          ...config,
+          params: params
+        }
+      );
+
+      const data = response.data.data;
+      dispatch(fetchAllRawMaterialsSuccess(data));
+      return data;
+    } catch (error) {
+      dispatch(fetchAllRawMaterialsFailure(error.message));
     }
   };
 };
