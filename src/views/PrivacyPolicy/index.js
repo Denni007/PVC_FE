@@ -10,19 +10,19 @@ const PrivacyPolicy = () => {
         <Typography variant="h3" component="h1" gutterBottom sx={{ color: '#0a3d62', borderBottom: '2px solid #0a3d62', pb: 2 }}>
           Privacy Policy
         </Typography>
-        
+
         <Typography variant="body1" sx={{ mb: 3 }}>
-          <strong>Effective Date:</strong> [Insert Date]
+          <strong>Effective Date:</strong> 01-02-2026
         </Typography>
 
         <Typography variant="body1" paragraph>
-          This Privacy Policy describes how Peregrine Pipes ("Company", "we", "our", or "us") collects,
-          uses, stores, and protects personal data when you use the Peregrine Loyalty Program Mobile Application ("App").
+          This Privacy Policy describes how Peregrine Pipes (&quot;Company&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) collects, uses, stores, and protects personal
+          data when you use the Peregrine Loyalty Program Mobile Application (&quot;App&quot;).
         </Typography>
 
         <Typography variant="body1" paragraph sx={{ mb: 4 }}>
-          The App is designed for dealers, distributors, plumbers, contractors, and authorized channel partners of Peregrine Pipes.
-          By using this App, you consent to the practices described below.
+          The App is designed for dealers, distributors, plumbers, contractors, and authorized channel partners of Peregrine Pipes. By using
+          this App, you consent to the practices described below.
         </Typography>
 
         <Box sx={{ mb: 4 }}>
@@ -149,8 +149,8 @@ const PrivacyPolicy = () => {
             3. Legal Basis for Processing (DPDP Act 2023 Compliance)
           </Typography>
           <Typography variant="body1" paragraph>
-            We process personal data based on your consent and for legitimate business purposes,
-            in accordance with the Digital Personal Data Protection Act, 2023 (India).
+            We process personal data based on your consent and for legitimate business purposes, in accordance with the Digital Personal
+            Data Protection Act, 2023 (India).
           </Typography>
           <Typography variant="body1" paragraph>
             You may withdraw consent at any time by contacting us.
@@ -185,8 +185,8 @@ const PrivacyPolicy = () => {
             5. Data Retention
           </Typography>
           <Typography variant="body1" paragraph>
-            We retain personal information for as long as required to maintain your loyalty account
-            or as required under applicable tax and regulatory laws.
+            We retain personal information for as long as required to maintain your loyalty account or as required under applicable tax and
+            regulatory laws.
           </Typography>
         </Box>
 
@@ -195,9 +195,8 @@ const PrivacyPolicy = () => {
             6. Taxation & Compliance
           </Typography>
           <Typography variant="body1" paragraph>
-            Rewards redeemed under the loyalty program may be subject to applicable tax laws,
-            including TDS (Tax Deducted at Source) where required under Indian Income Tax regulations.
-            Users may be required to provide PAN details for compliance purposes.
+            Rewards redeemed under the loyalty program may be subject to applicable tax laws, including TDS (Tax Deducted at Source) where
+            required under Indian Income Tax regulations. Users may be required to provide PAN details for compliance purposes.
           </Typography>
         </Box>
 
@@ -206,8 +205,8 @@ const PrivacyPolicy = () => {
             7. Data Security
           </Typography>
           <Typography variant="body1" paragraph>
-            We implement reasonable technical and organizational security measures
-            to safeguard personal data against unauthorized access, misuse, or disclosure.
+            We implement reasonable technical and organizational security measures to safeguard personal data against unauthorized access,
+            misuse, or disclosure.
           </Typography>
         </Box>
 
@@ -233,7 +232,7 @@ const PrivacyPolicy = () => {
 
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" component="h2" gutterBottom sx={{ color: '#0a3d62', mt: 3 }}>
-            9. Children's Privacy
+            9. Children&apos;s Privacy
           </Typography>
           <Typography variant="body1" paragraph>
             This App is intended for business professionals and is not for individuals under 18 years of age.
@@ -245,8 +244,7 @@ const PrivacyPolicy = () => {
             10. Changes to This Policy
           </Typography>
           <Typography variant="body1" paragraph>
-            We may update this Privacy Policy periodically.
-            Updates will be posted in the App with a revised effective date.
+            We may update this Privacy Policy periodically. Updates will be posted in the App with a revised effective date.
           </Typography>
         </Box>
 
@@ -260,13 +258,15 @@ const PrivacyPolicy = () => {
           <Typography variant="body1" component="div" sx={{ mt: 2 }}>
             <strong>Peregrine Pipes</strong>
             <br />
-            [Registered Office Address]
+            807 - KBC , Yogi Chowk Rd,
+            <br />
+            Yogi Chowk Ground, Chikuwadi,
             <br />
             Surat, Gujarat, India
             <br />
-            Email: support@peregrinepipe.com
+            Email: info@peregrinepipe.com
             <br />
-            Phone: [Insert Contact Number]
+            Phone: +91 99092 51011, +91 99092 03529
             <br />
             Response Time: Within 15 working days
           </Typography>
