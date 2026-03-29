@@ -1,0 +1,37 @@
+name: Prod CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Build and Production
+        run: |
+          # Add your build and production
+          echo "Building and Production the application"
+
+      - name: Deploy to VPS
+        env:
+          SSH_USER: ${{ secrets.VPS_USER }}
+          SSH_PASS: ${{ secrets.VPS_PASSWORD }}
+          VPS_IP: ${{ secrets.VPS_IP }}
+        run: |
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@$VPS_IP << 'EOF'
+            cd /root/prod/FE
+            git pull origin main
+            pnpm install
+            NODE_OPTIONS="--max_old_space_size=4096" npm run build
+            cd build
+            cp -r * /var/www/prod
+          EOF
