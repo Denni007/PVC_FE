@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Credit Note</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .invoice-container {
+        width: 95%;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header,
+      .footer {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .company-details,
+      .buyer-details {
+        width: 48%;
+        display: inline-block;
+        vertical-align: top;
+      }
+      .company-details {
+        text-align: left;
+      }
+      .buyer-details {
+        text-align: right;
+      }
+      .invoice-details {
+        margin-top: 20px;
+      }
+      .invoice-details td,
+      .invoice-details th {
+        padding: 8px;
+        text-align: center;
+      }
+      .invoice-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+      }
+      .totals {
+        margin-top: 20px;
+        width: 100%;
+      }
+      .totals td {
+        padding: 8px;
+        text-align: right;
+      }
+      .signature {
+        margin-top: 20px;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-container">
+      <div class="header">
+        <h1>CREDIT NOTE</h1>
+      </div>
+
+      <div class="company-details">
+        <p><strong><%= data.form.companyname%></strong></p>
+        <p>
+          <%= data.form.address1%>,<br />
+          <%= data.form.city %>, <%=
+          data.form.state %> - <%=
+          data.form.pincode %><br />
+          GSTIN/UIN: <%= data.form.gstnumber%><br />
+        </p>
+      </div>
+
+      <div class="buyer-details">
+        <p><strong><%= data.creditNote.accountCreditNo.accountName %></strong></p>
+        <p>
+          <% if (data.creditNote?.accountCreditNo?.accountDetail?.address1) { %>
+            <%= data.creditNote?.accountCreditNo.accountDetail.address1 %><br />
+        <% } %>
+        <% if (data.creditNote?.accountCreditNo?.accountDetail?.city && data.creditNote?.accountCreditNo?.accountDetail?.state && data.creditNote?.accountCreditNo?.accountDetail?.pincode) { %>
+            <%= data.creditNote?.accountCreditNo.accountDetail.city %>, <%=
+          data.creditNote?.accountCreditNo.accountDetail.state %> - <%=
+          data.creditNote?.accountCreditNo.accountDetail.pincode %><br />
+        <% } %>
+
+        <% if (data.creditNote?.accountCreditNo?.accountDetail?.gstNumber) { %>
+            GSTIN/UIN: <%= data.creditNote?.accountCreditNo.accountDetail.gstNumber ||
+            "Unregistered" %><br />
+        <% } %>
+        </p>
+      </div>
+
+      <div class="invoice-details">
+        <table class="invoice-table">
+          <tr>
+            <th>Credit Note No.</th>
+            <td><%= data.creditNote.creditnoteNo %></td>
+            <th>Date</th>
+            <td>
+              <%= new Date(data.creditNote.creditdate).toLocaleDateString() %>
+            </td>
+          </tr>
+          <tr>
+            <th>Org. Invoice No.</th>
+            <td><%= data.creditNote.org_invoiceno ?? N/A %></td>
+            <th>Org. Invoice Date</th>
+            <td>
+                <%= new Date(data.creditNote.org_invoicedate).toLocaleDateString() %>
+              </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="invoice-items">
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>Sl No</th>
+              <th>Product</th>
+              <th>HSN</th>
+              <th>Quantity</th>
+              <th>Rate</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% data.creditNote.items.forEach((item, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= item.CreditProduct.productname %></td>
+              <td><%= item.CreditProduct.HSNcode %></td>
+              <td><%= item.qty %> <%= item.unit %></td>
+              <td>₹ <%= item.rate %></td>
+              <td>₹ <%= item.mrp %></td>
+            </tr>
+            <% }); %>
+            <tr>
+              <td colspan="4"></td>
+              <td><strong>Total</strong></td>
+              <td>₹ <%= data.creditNote.totalMrp %></td>
+            </tr>
+            <% if (data.creditNote.totalIgst > 0) { %>
+            <tr>
+              <td colspan="4"></td>
+              <td>IGST</td>
+              <td>₹ <%= data.creditNote.totalIgst %></td>
+            </tr>
+            <% } else if (data.creditNote.totalSgst > 0) { %>
+            <tr>
+              <td colspan="4"></td>
+              <td>CGST</td>
+              <td>₹ <%= data.creditNote.totalSgst/2 %></td>
+            </tr>
+            <tr>
+              <td colspan="4"></td>
+              <td>SGST</td>
+              <td>₹ <%= data.creditNote.totalSgst/2 %></td>
+            </tr>
+            <% } %>
+            <tr>
+              <td colspan="4"></td>
+              <td><strong>Total Payable</strong></td>
+              <td>₹ <%= data.creditNote.mainTotal %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="signature">
+        <p>For <strong><%= data.form.companyname%></strong></p>
+        <p>Authorised Signatory</p>
+      </div>
+    </div>
+  </body>
+</html>
