@@ -70,7 +70,7 @@ const startServer = async () => {
     await createTunnel();
 
     await sequelize.authenticate();
-    console.log("✅ DB connected");
+    console.log(`✅ DB connected on port ${sequelize.config.port}`);
 
     await sequelize.sync();
     console.log("✅ All tables were successfully synchronized.");

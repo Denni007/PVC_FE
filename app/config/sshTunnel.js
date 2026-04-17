@@ -60,7 +60,7 @@ const createTunnel = () => {
         });
 
         server.listen(tunnelOptions.srcPort, tunnelOptions.srcHost, () => {
-            console.log(`Local tunnel server listening on ${tunnelOptions.srcHost}:${tunnelOptions.srcPort}`);
+            console.log(`Local tunnel server listening on ${tunnelOptions.srcHost}:${tunnelOptions.srcPort} -> routing to ${tunnelOptions.dstHost}:${tunnelOptions.dstPort}`);
             sshClient.on('ready', () => {
                 console.log('SSH client ready.');
                 resolve();
