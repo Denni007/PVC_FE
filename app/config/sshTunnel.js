@@ -49,6 +49,11 @@ const createTunnel = () => {
         });
 
         server.on('error', (err) => {
+            if (err.code === 'EADDRINUSE') {
+                console.log(`Port ${tunnelOptions.srcPort} is already in use. Assuming tunnel is established by another instance.`);
+                sshClient.end();
+                return resolve();
+            }
             console.error("Local server error:", err);
             sshClient.end();
             reject(err);
