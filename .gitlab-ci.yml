@@ -6,5 +6,5 @@ production:
     - tag-hare-krishna-backend-prod
   stage: deploy
   script:
-    - rsync -hravz --exclude '.git' --exclude '.well-known' --exclude 'media' --exclude 'config'  --exclude '.env' . /var/www/erp-backend/html
+    - rsync -hravz --exclude '.git' --exclude '.well-known' --exclude 'media'  --exclude '.env' . /var/www/erp-backend/html
     - chown -R root:root /var/www/erp-backend/html
