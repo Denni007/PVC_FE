@@ -14,7 +14,7 @@ if (useSshTunnel) {
     productionConfig.port = 3307;
 } else {
     productionConfig.host = process.env.DB_HOST;
-    productionConfig.port = 3306;
+    productionConfig.port = process.env.DB_PORT;
 }
 
 module.exports = {
@@ -23,7 +23,7 @@ module.exports = {
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
         host: process.env.DB_HOST || "127.0.0.1",
-        port: useSshTunnel ? 3307 : 3306,
+        port: process.env.DB_PORT,
         dialect: "mysql",
     },
     test: {
