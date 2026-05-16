@@ -11,6 +11,12 @@ const C_WalletLedger = require("../models/C_WalletLedger");
 const C_Cashbook = require("../models/C_Cashbook");
 const C_UserBalance = require("../models/C_userBalance");
 const C_Payment = require("../models/C_Payment");
+const { verifyRecaptchaV2 } = require("../util/recaptcha");
+const {
+  getLockStatus,
+  recordFailedAttempt,
+  clearThrottle,
+} = require("../util/loginThrottle");
 
 exports.create_user = async (req, res) => {
   try {
@@ -321,9 +327,56 @@ exports.reset_password = async (req, res) => {
 };
 exports.user_login = async (req, res) => {
   try {
-    const { mobileno, password } = req.body;
+    const { mobileno, password, recaptchaToken } = req.body;
+
+    const lockStatus = getLockStatus(mobileno);
+    if (lockStatus.locked) {
+      const mins = Math.ceil(lockStatus.retryAfterSeconds / 60);
+      res.set("Retry-After", String(lockStatus.retryAfterSeconds));
+      return res.status(429).json({
+        status: "false",
+        message: `Too many failed login attempts. Please try again in ${mins} minute(s).`,
+        retryAfterSeconds: lockStatus.retryAfterSeconds,
+      });
+    }
+
+    if (process.env.RECAPTCHA_SECRET_KEY) {
+      if (!recaptchaToken || typeof recaptchaToken !== "string") {
+        return res.status(400).json({
+          status: "false",
+          message: "reCAPTCHA verification is required",
+        });
+      }
+      let captchaResult;
+      try {
+        captchaResult = await verifyRecaptchaV2(recaptchaToken);
+      } catch (err) {
+        console.error("reCAPTCHA siteverify request failed:", err);
+        return res.status(500).json({
+          status: "false",
+          message: "reCAPTCHA verification failed",
+        });
+      }
+      if (!captchaResult.success) {
+        return res.status(400).json({
+          status: "false",
+          message: "Invalid or expired reCAPTCHA. Please try again.",
+        });
+      }
+    }
+
     const user = await User.findOne({ where: { mobileno } });
     if (!user) {
+      const afterFail = recordFailedAttempt(mobileno);
+      if (afterFail.locked) {
+        const mins = Math.ceil(afterFail.retryAfterSeconds / 60);
+        res.set("Retry-After", String(afterFail.retryAfterSeconds));
+        return res.status(429).json({
+          status: "false",
+          message: `Too many failed login attempts. Please try again in ${mins} minute(s).`,
+          retryAfterSeconds: afterFail.retryAfterSeconds,
+        });
+      }
       return res
         .status(404)
         .json({ status: "false", message: "User Not Found" });
@@ -332,6 +385,16 @@ exports.user_login = async (req, res) => {
     const isPasswordCorrect = await bcrypt.compare(basePassword, user.password);
 
     if (!isPasswordCorrect) {
+      const afterFail = recordFailedAttempt(mobileno);
+      if (afterFail.locked) {
+        const mins = Math.ceil(afterFail.retryAfterSeconds / 60);
+        res.set("Retry-After", String(afterFail.retryAfterSeconds));
+        return res.status(429).json({
+          status: "false",
+          message: `Too many failed login attempts. Please try again in ${mins} minute(s).`,
+          retryAfterSeconds: afterFail.retryAfterSeconds,
+        });
+      }
       return res
         .status(401)
         .json({ status: "false", message: "Invalid Password" });
@@ -344,6 +407,7 @@ exports.user_login = async (req, res) => {
     });
 
     if (!data || !data.companyId) {
+      clearThrottle(mobileno);
       return res
         .status(400)
         .json({ status: "false", message: "User With Company Not Connected" });
@@ -369,6 +433,8 @@ exports.user_login = async (req, res) => {
     } else {
       await admintoken.create({ userId: user.id, token });
     }
+
+    clearThrottle(mobileno);
 
     return res.status(200).json({
       status: "true",
