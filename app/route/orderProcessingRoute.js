@@ -9,10 +9,15 @@ const {
   C_get_all_orderprocessing,
   C_Update_Status_orderprocessing,
   get_all_items_orderprocessing,
+  create_loyalty_order,
 } = require("../controller/OrderProcessing");
 
 const router = express.Router();
 
+router.post(
+  "/create_loyalty_order",
+  create_loyalty_order
+);
 router.post(
   "/create_order_processing",
   adminAuth("Order Processing:create_order_processing"),

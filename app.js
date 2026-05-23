@@ -9,6 +9,7 @@ const app = express();
 const port = process.env.PORT;
 const createTunnel = require("./app/config/sshTunnel");
 const sequelize = require("./app/config/index"); // Make sure this path is correct
+require("./app/models/loyaltyModels");
 
 const logRequestMiddleware = (req, res, next) => {
   const logDate = moment().format("DD-MM-YYYY");

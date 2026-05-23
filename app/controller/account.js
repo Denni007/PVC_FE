@@ -1,6 +1,7 @@
 const AccountGroup = require('../models/AccountGroup');
 const Account = require('../models/Account');
 const AccountDetail = require('../models/AccountDetail');
+const LoyaltyUser = require('../models/loyaltyUser');
 const {isUnique} = require("../constant/common");
 const {Op} = require("sequelize");
 const {ACCOUNT_GROUPS_TYPE} = require("../constant/constant");
@@ -275,6 +276,56 @@ exports.delete_account = async (req, res) => {
         return res.status(500).json({status: "false", message: "Internal Server Error."})
     }
 }
+
+exports.link_loyalty_user_account = async (req, res) => {
+    try {
+        const companyId = req.user.companyId;
+        const { accountId } = req.params;
+        const { loyaltyUserId } = req.body;
+
+        if (!loyaltyUserId) {
+            return res.status(400).json({ status: "false", message: "Loyalty User is required" });
+        }
+
+        const account = await Account.findOne({
+            where: {
+                id: accountId,
+                companyId: companyId,
+                isActive: true
+            }
+        });
+
+        if (!account) {
+            return res.status(404).json({ status: "false", message: "Account Not Found" });
+        }
+
+        const loyaltyUser = await LoyaltyUser.findByPk(loyaltyUserId);
+
+        if (!loyaltyUser) {
+            return res.status(404).json({ status: "false", message: "Loyalty User Not Found" });
+        }
+
+        if (loyaltyUser.accountId && Number(loyaltyUser.accountId) !== Number(accountId)) {
+            return res.status(409).json({
+                status: "false",
+                message: "Loyalty User is already linked with another account"
+            });
+        }
+
+        loyaltyUser.accountId = account.id;
+        await loyaltyUser.save();
+
+        return res.status(200).json({
+            status: "true",
+            message: "Loyalty User linked with Account successfully",
+            data: loyaltyUser
+        });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ status: "false", message: "Internal Server Error." });
+    }
+}
+
 exports.view_all_bank_account = async (req, res)=>{
     try {
         const companyId = req.user.companyId;
