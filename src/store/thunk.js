@@ -874,8 +874,11 @@ export const loginAdmin = (credentials, navigate) => {
       dispatch(loginSuccess(userData));
       return userData;
     } catch (error) {
-      toast.error(error.response.data.message, { autoClose: 1000 });
+      const msg =
+        error.response?.data?.message || error.message || 'Login failed';
+      toast.error(msg, { autoClose: 1000 });
       dispatch(loginFailure(error.message));
+      throw error;
     }
   };
 };
