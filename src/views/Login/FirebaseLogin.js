@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { toast } from 'react-toastify';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -30,10 +32,13 @@ import PhoneIcon from '@mui/icons-material/Phone';
 
 // ==============================|| FIREBASE LOGIN ||============================== //
 
+const recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
+
 const FirebaseLogin = ({ ...rest }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const recaptchaRef = useRef(null);
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => {
@@ -55,18 +60,27 @@ const FirebaseLogin = ({ ...rest }) => {
           mobileno: Yup.string().max(10).required('Mobile Number is required'),
           password: Yup.string().max(255).required('Password is required')
         })}
-        onSubmit={(values, { setSubmitting }) => {
-          dispatch(loginAdmin(values, navigate))
-            .then(() => {
+        onSubmit={async (values, { setSubmitting }) => {
+          let recaptchaToken = '';
+          if (recaptchaSiteKey) {
+            recaptchaToken = recaptchaRef.current?.getValue() || '';
+            if (!recaptchaToken) {
+              toast.error('Please complete the reCAPTCHA', { autoClose: 2000 });
               setSubmitting(false);
-            })
-            .catch(() => {
-              setSubmitting(false);
-            });
+              return;
+            }
+          }
+          try {
+            await dispatch(loginAdmin({ ...values, recaptchaToken }, navigate));
+          } catch {
+            recaptchaRef.current?.reset();
+          } finally {
+            setSubmitting(false);
+          }
         }}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-          <form noValidate onSubmit={handleSubmit} {...rest}>
+          <form noValidate autoComplete="off" onSubmit={handleSubmit} {...rest}>
             <TextField
               error={Boolean(touched.mobileno && errors.mobileno)}
               fullWidth
@@ -79,6 +93,7 @@ const FirebaseLogin = ({ ...rest }) => {
               value={values.mobileno}
               variant="outlined"
               color="secondary"
+              inputProps={{ autoComplete: 'off' }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -103,6 +118,7 @@ const FirebaseLogin = ({ ...rest }) => {
                 onChange={handleChange}
                 label="Password"
                 color="secondary"
+                inputProps={{ autoComplete: 'new-password' }}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -128,6 +144,12 @@ const FirebaseLogin = ({ ...rest }) => {
             {errors.submit && (
               <Box mt={3}>
                 <FormHelperText error>{errors.submit}</FormHelperText>
+              </Box>
+            )}
+
+            {recaptchaSiteKey && (
+              <Box mt={2} display="flex" justifyContent="center">
+                <ReCAPTCHA ref={recaptchaRef} sitekey={recaptchaSiteKey} />
               </Box>
             )}
 
