@@ -16,11 +16,10 @@ jobs:
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
 
-      - name: Production
+      - name: Build and Production
         run: |
-          # Production commands here
-          echo "Production the application"
-
+          # Add your build and production
+          echo "Building and Production the application"
       - name: Deploy to VPS
         env:
           SSH_USER: ${{ secrets.VPS_USERNAME }}
@@ -28,12 +27,10 @@ jobs:
           VPS_IP: ${{ secrets.VPS_IP }}
         run: |
           sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@$VPS_IP << 'EOF'
-            cd /root/prod/BE
-            git fetch origin
-            git reset --hard origin/main
-            git clean -fd
-            npm install
-            npm run migrate-run
-            npm run seeder-all
-            pm2 restart PROD_SERVER
+            cd /root/prod/FE
+            git pull origin main
+            pnpm install
+            NODE_OPTIONS="--max_old_space_size=4096" npm run build
+            cd build
+            cp -r * /var/www/prod
           EOF
