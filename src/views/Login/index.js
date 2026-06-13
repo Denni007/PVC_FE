@@ -19,43 +19,63 @@ const Login = () => {
   const theme = useTheme();
 
   return (
-    <Grid
-      container
-      justifyContent="center"
-      alignItems="center"
-      sx={{
-        height: '100%',
-        minHeight: '100vh',
-        backgroundImage: `url(${backgroundImageUrl})`, // Corrected to use template literal with URL
-        backgroundSize: 'cover', // Optional: Adjust the background size as needed
-        backgroundRepeat: 'no-repeat' // Optional: Adjust the background repeat as needed
-      }}
-    >
+<Grid
+  container
+  justifyContent="center"
+  alignItems="center"
+  sx={{
+    minHeight: '100vh',
+    position: 'relative',
+    backgroundImage: `url(${backgroundImageUrl})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      inset: 0,
+      background: 'rgba(0,0,0,0.45)',
+      backdropFilter: 'blur(3px)'
+    }
+  }}
+>
       <Grid item xs={11} sm={7} md={6} lg={4}>
-        <Card
-          sx={{
-            overflow: 'visible',
-            display: 'flex',
-            position: 'relative',
-            '& .MuiCardContent-root': {
-              flexGrow: 1,
-              flexBasis: '50%',
-              width: '50%'
-            },
-            maxWidth: '475px',
-            margin: '24px auto'
-          }}
-        >
+      <Card
+  sx={{
+    position: 'relative',
+    zIndex: 1,
+    maxWidth: 480,
+    mx: 'auto',
+    borderRadius: 4,
+
+    background: 'rgba(255,255,255,0.92)',
+    backdropFilter: 'blur(20px)',
+
+    boxShadow: '0 20px 50px rgba(0,0,0,0.25)',
+
+    border: '1px solid rgba(255,255,255,0.3)',
+
+    overflow: 'hidden',
+
+    transition: 'all .3s ease',
+
+    '&:hover': {
+      transform: 'translateY(-4px)',
+      boxShadow: '0 25px 60px rgba(0,0,0,0.35)'
+    }
+  }}
+>
           <CardContent sx={{ p: theme.spacing(5, 4, 3, 4) }}>
             <Grid container direction="column" spacing={4} justifyContent="center">
               <Grid item xs={12}>
                 <Grid container justifyContent="space-between">
                   <Grid item>
                     <Typography color="textPrimary" gutterBottom variant="h2">
-                      Login in
+                      Welcome Back
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      To keep connected with us.
+                      Sign in to continue
                     </Typography>
                   </Grid>
                   {/* <Grid item>
