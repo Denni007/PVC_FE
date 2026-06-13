@@ -1,14 +1,18 @@
 stages:
   - deploy
 
-production:
+production_server_1:
+  stage: deploy
   tags:
     - tag-hare-krishna-frontend-prod
-  stage: deploy
   script:
-    - rsync -hravz --exclude '.git' --exclude '.well-known' --exclude 'media'  --exclude '.env' . /var/www/erp-frontend/html
+    - rsync -hravz --exclude '.git' --exclude '.well-known' --exclude 'media' --exclude '.env' . /var/www/erp-frontend/html
     - chown -R root:root /var/www/erp-frontend/html
 
-
-
-
+production_server_2:
+  stage: deploy
+  tags:
+    - tag-hare-krishna-frontend-sync-prod
+  script:
+    - rsync -hravz --exclude '.git' --exclude '.well-known' --exclude 'media' --exclude '.env' . /var/www/hkisync/html
+    - chown -R root:root /var/www/hkisync/html
