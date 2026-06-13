@@ -6,7 +6,7 @@ production_server_1:
   tags:
     - tag-hare-krishna-frontend-prod
   script:
-    - rsync -hravz --exclude '.git' --exclude '.well-known' --exclude 'media' --exclude '.env' . /var/www/erp-frontend/html
+    - rsync -hravz --exclude '.git' --exclude '.well-known' --exclude 'media' --exclude '.gitlab-ci.yml' --exclude '.env' . /var/www/erp-frontend/html
     - chown -R root:root /var/www/erp-frontend/html
 
 production_server_2:
@@ -14,5 +14,5 @@ production_server_2:
   tags:
     - tag-hare-krishna-frontend-sync-prod
   script:
-    - rsync -hravz --exclude '.git' --exclude '.well-known' --exclude 'media' --exclude '.env' . /var/www/hkisync/html
+    - rsync -hravz --exclude '.git' --exclude '.well-known' --exclude 'media' --exclude '.gitlab-ci.yml' --exclude '.env' . /var/www/hkisync/html
     - chown -R root:root /var/www/hkisync/html
