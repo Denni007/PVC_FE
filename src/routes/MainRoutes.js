@@ -29,6 +29,10 @@ const DashboardDefault = Loadable(lazy(() => import('../views/Dashboard')))
 const SamplePage = Loadable(lazy(() => import('../views/SamplePage')))
 const Reports = Loadable(lazy(() => import('../views/finacial managenment/Ledgers/reports')))
 const Reportcash = Loadable(lazy(() => import('../views/finacial managenment/Ledgers/reportscash')))
+const Productcosting = Loadable(lazy(() => import('../views/production managenment/Product Costing/productcosting')))
+const RecipeManagement = Loadable(lazy(() => import('../views/production managenment/Recipe Management/index')));
+
+
 // ++++++++++++++++++++++++++++++++++++++++++++ Routes of Self Expense +++++++++++++++++++++++++++++++++++++++++++++++++++
 const SelfExpenseList = Loadable(lazy(() => import('../views/finacial managenment/Self Expense/selfExpenseList')))
 const SelfExpensepage = Loadable(lazy(() => import('../views/finacial managenment/Self Expense/selfExpense')))
@@ -543,6 +547,9 @@ const MainRoutes = {
       element: <ProtectedRoute element={Bomview} resource="Production" permissionName="view_production" />
     },
     { path: '/products', element: <Product /> },
+    { path: '/productcosting', element: <Productcosting /> },
+    { path: '/recipemanagement', element: <RecipeManagement /> },
+
 
     // ++++++++++++++++++++++++++++++++++++++++++++Routes of stock +++++++++++++++++++++++++++++++++++++++++++++++++++
     // { path: '/stocklist', element: <ProtectedRoute element={LowStock} resource="Stock" permissionName="view_all_product_stock" /> },

@@ -24,27 +24,27 @@ import { useDispatch } from 'react-redux';
 import { getallPermissions } from 'store/thunk';
 
 const icons = {
-  NavigationOutlinedIcon: NavigationOutlinedIcon,
-  HomeOutlinedIcon: HomeOutlinedIcon,
-  ChromeReaderModeOutlinedIcon: ChromeReaderModeOutlinedIcon,
-  HelpOutlineOutlinedIcon: HelpOutlineOutlinedIcon,
-  SecurityOutlinedIcon: SecurityOutlinedIcon,
-  AccountTreeOutlinedIcon: AccountTreeOutlinedIcon,
-  BlockOutlinedIcon: BlockOutlinedIcon,
-  AppsOutlinedIcon: AppsOutlinedIcon,
-  ContactSupportOutlinedIcon: ContactSupportOutlinedIcon,
-  AccountBalanceIcon: AccountBalanceIcon,
-  LoyaltyIcon: LoyaltyIcon,
-  ShoppingBasketIcon: ShoppingBasketIcon,
-  ProductionQuantityLimitsIcon: ProductionQuantityLimitsIcon,
-  ContactMailIcon: ContactMailIcon,
-  StoreIcon: StoreIcon,
-  PaymentsIcon: PaymentsIcon,
-  PropaneTankIcon: PropaneTankIcon,
-  HomeIcon: HomeIcon,
-  ScannerIcon: ScannerIcon,
-  BusinessCenterIcon: BusinessCenterIcon,
-  ExtensionIcon: ExtensionIcon
+  NavigationOutlinedIcon,
+  HomeOutlinedIcon,
+  ChromeReaderModeOutlinedIcon,
+  HelpOutlineOutlinedIcon,
+  SecurityOutlinedIcon,
+  AccountTreeOutlinedIcon,
+  BlockOutlinedIcon,
+  AppsOutlinedIcon,
+  ContactSupportOutlinedIcon,
+  AccountBalanceIcon,
+  LoyaltyIcon,
+  ShoppingBasketIcon,
+  ProductionQuantityLimitsIcon,
+  ContactMailIcon,
+  StoreIcon,
+  PaymentsIcon,
+  PropaneTankIcon,
+  HomeIcon,
+  ScannerIcon,
+  BusinessCenterIcon,
+  ExtensionIcon
 };
 
 const MenuItem = () => {
@@ -207,16 +207,6 @@ const MenuItem = () => {
     'view_all_receipt'
   ]);
 
-  // const hasAllPermissionsClaimcash = checkAllPermissions('Claim Cash', [
-  //   'create_claim',
-  //   'update_claim',
-  //   'delete_claim',
-  //   'view_single_claim',
-  //   'view_myclaim'
-  // ]);
-
-  // const hasAllPermissionsRecieveClaimcash = checkAllPermissions('Claim Cash', ['view_reciveclaim', 'isapproved_claim']);
-
   const hasAllPermissionsPaymentBank = checkAllPermissions('Payment', [
     'create_payment',
     'update_payment',
@@ -283,7 +273,6 @@ const MenuItem = () => {
     'view_all_itemSubCategory_category'
   ]);
 
-
   const hasAllPermissionsOp = checkAllPermissions('Order Processing', [
     'create_order_processing',
     'update_order_processing',
@@ -319,14 +308,6 @@ const MenuItem = () => {
   const hasAllPermissionspassbook = checkAllPermissions('Ledger Cash', ['passbook']);
   const hasAllPermissionscashbook = checkAllPermissions('Ledger Cash', ['cashbook']);
 
-  // const hasAllPermissionsPreventivemaintenance = checkAllPermissions('Preventive Maintenance', [
-  //   'create_preventive_maintenance',
-  //   'view_all_preventive_maintenance',
-  //   'view_one_preventive_maintenance',
-  //   'update_preventive_maintenance',
-  //   'delete_preventive_maintenance'
-  // ]);
-
   const hasAllPermissionsWallet = checkAllPermissions('Claim Cash', ['view_wallet']);
 
   const hasAllPermissionsEmployee = checkAllPermissions('Employee', [
@@ -352,27 +333,27 @@ const MenuItem = () => {
       {
         id: 'navigation',
         type: 'group',
-        icon: icons['HomeIcon'],
+        icon: icons.HomeIcon,
         children: [
           {
             id: 'dashboard',
             title: 'Dashboard',
             type: 'item',
-            icon: icons['HomeIcon'],
+            icon: icons.HomeIcon,
             url: '/dashboard'
           }
         ]
       },
-      createConfig() === 'C' && createConfig1() === 'Super Admin'
-        ? {
+      createConfig() === 'C' &&
+        createConfig1() === 'Super Admin' && {
           type: 'group',
-          icon: icons['NavigationOutlinedIcon'],
+          icon: icons.NavigationOutlinedIcon,
           children: [
             {
               id: 'auth',
               title: 'Authentication',
               type: 'collapse',
-              icon: icons['SecurityOutlinedIcon'],
+              icon: icons.SecurityOutlinedIcon,
               children: [
                 {
                   id: 'permission',
@@ -389,121 +370,96 @@ const MenuItem = () => {
               ]
             }
           ]
-        }
-        : {},
+        },
       {
         type: 'group',
-        icon: icons[''],
+        icon: icons.AccountBalanceIcon,
         children: [
           {
             id: 'Financial Management',
             title: 'Financial Management',
             type: 'collapse',
-            icon: icons['AccountBalanceIcon'],
+            icon: icons.AccountBalanceIcon,
             children: [
-              createConfig() === 'C'
-                ? {
-                  id: 'Cash',
-                  title: 'Cash',
-                  type: 'collapse',
-                  icon: icons['PaymentsIcon'],
-                  children: [
-                    hasAllPermissionscashbook && {
-                      id: 'Cash Book',
-                      title: 'Cash Book',
-                      type: 'item',
-                      url: '/cashbook'
-                    },
-                    hasAllPermissionspassbook && {
-                      id: 'Pass Book',
-                      title: 'Pass Book',
-                      type: 'item',
-                      url: '/passbook'
-                    },
-                    hasAllPermissionsWallet && {
-                      id: 'Wallet',
-                      title: 'Wallet',
-                      type: 'item',
-                      url: '/wallet'
-                    },
-                    hasAllPermissionSalesCash && {
-                      id: 'sales cash',
-                      title: 'Sales Cash',
-                      type: 'item',
-                      url: '/salescashlist'
-                    },
-                    hasAllPermissionPurchaseinvoiceCash && {
-                      id: 'Purchase Cash',
-                      title: 'Purchase Cash',
-                      type: 'item',
-                      url: '/purchaseinvoicecashList'
-                    },
-                    hasAllPermissionExpense && {
-                      id: 'expense',
-                      title: 'Expense',
-                      type: 'item',
-                      url: '/expenselist'
-                    },
-                    hasAllPermissionPaymentCash && {
-                      id: 'payment Cash',
-                      title: 'Payment',
-                      type: 'item',
-                      url: '/paymentCashlist'
-                    },
-                    hasAllPermissionPaymentRecieveCash && {
-                      id: 'Receipt cash',
-                      title: 'Receipt',
-                      type: 'item',
-                      url: '/paymentrecieveList'
-                    },
-                    {
-                      id: 'Report',
-                      title: 'Report',
-                      type: 'item',
-                      url: '/cashreports'
-                    },
-                    hasAllPermissionsDebitnotecash && {
-                      id: 'Debit note cash',
-                      title: 'Debit Note Cash',
-                      type: 'item',
-                      url: '/debitnotecashlist'
-                    },
-                    hasAllPermissionsCreditnotecash && {
-                      id: 'Credit note cash',
-                      title: 'Credit Note Cash',
-                      type: 'item',
-                      url: '/creditnotecashlist'
-                    }
-                  ]
-                }
-                : {},
-              // createConfig() === 'C'
-              //   ? {
-              //       id: 'Cliam',
-              //       title: 'Cliam',
-              //       type: 'collapse',
-              //       icon: icons['PaymentsIcon'],
-              //       children: [
-              //         hasAllPermissionsClaimcash && {
-              //           id: 'Demand cash',
-              //           title: 'Demand Cash',
-              //           type: 'item',
-              //           url: '/claimcashlist'
-              //         },
-              //         hasAllPermissionsRecieveClaimcash && {
-              //           id: 'Approve claim',
-              //           title: 'Approve Claim',
-              //           type: 'item',
-              //           url: '/recieveclaimcashlist'
-              //         }
-              //       ]
-              //     }
-              //   : {},
+              createConfig() === 'C' && {
+                id: 'Cash',
+                title: 'Cash',
+                type: 'collapse',
+                icon: icons.PaymentsIcon,
+                children: [
+                  hasAllPermissionscashbook && {
+                    id: 'Cash Book',
+                    title: 'Cash Book',
+                    type: 'item',
+                    url: '/cashbook'
+                  },
+                  hasAllPermissionspassbook && {
+                    id: 'Pass Book',
+                    title: 'Pass Book',
+                    type: 'item',
+                    url: '/passbook'
+                  },
+                  hasAllPermissionsWallet && {
+                    id: 'Wallet',
+                    title: 'Wallet',
+                    type: 'item',
+                    url: '/wallet'
+                  },
+                  hasAllPermissionSalesCash && {
+                    id: 'sales cash',
+                    title: 'Sales Cash',
+                    type: 'item',
+                    url: '/salescashlist'
+                  },
+                  hasAllPermissionPurchaseinvoiceCash && {
+                    id: 'Purchase Cash',
+                    title: 'Purchase Cash',
+                    type: 'item',
+                    url: '/purchaseinvoicecashList'
+                  },
+                  hasAllPermissionExpense && {
+                    id: 'expense',
+                    title: 'Expense',
+                    type: 'item',
+                    url: '/expenselist'
+                  },
+                  hasAllPermissionPaymentCash && {
+                    id: 'payment Cash',
+                    title: 'Payment',
+                    type: 'item',
+                    url: '/paymentCashlist'
+                  },
+                  hasAllPermissionPaymentRecieveCash && {
+                    id: 'Receipt cash',
+                    title: 'Receipt',
+                    type: 'item',
+                    url: '/paymentrecieveList'
+                  },
+                  {
+                    id: 'Report',
+                    title: 'Report',
+                    type: 'item',
+                    url: '/cashreports'
+                  },
+                  hasAllPermissionsDebitnotecash && {
+                    id: 'Debit note cash',
+                    title: 'Debit Note Cash',
+                    type: 'item',
+                    url: '/debitnotecashlist'
+                  },
+                  hasAllPermissionsCreditnotecash && {
+                    id: 'Credit note cash',
+                    title: 'Credit Note Cash',
+                    type: 'item',
+                    url: '/creditnotecashlist'
+                  }
+                ]
+              },
               {
                 id: 'Vouchers',
                 title: 'Vouchers',
                 type: 'collapse',
-                icon: icons['PaymentsIcon'],
+                icon: icons.PaymentsIcon,
                 children: [
                   hasAllpermissionsalesinvoice && {
                     id: 'sales invoice',
@@ -573,83 +529,66 @@ const MenuItem = () => {
           }
         ]
       },
-      createConfig() === 'C'
-        ? {
-          type: 'group',
-          icon: icons['ProductionQuantityLimitsIcon'],
-          children: [
-            {
-              id: 'Production Management',
-              title: 'Production Management',
-              type: 'collapse',
-              icon: icons['ProductionQuantityLimitsIcon'],
-              children: [
-                // {
-                // id: 'Items',
-                // title: 'Items',
-                // type: 'collapse',
-                // icon: icons['ExtensionIcon'],
-                // children: [
-                hasAllPermissionsItem && {
-                  id: 'Item List',
-                  title: 'Item',
-                  type: 'item',
-                  url: '/productlist'
-                },
-                // hasAllPermissionsItem && {
-                //   id: 'Raw Material List',
-                //   title: 'Raw Material',
-                //   type: 'item',
-                //   url: '/rawmateriallist'
-                // },
-                // hasAllPermissionsItem && {
-                //   id: 'Spare',
-                //   title: 'Spare',
-                //   type: 'item',
-                //   url: '/sparelist'
-                // }
-                // ]
-                // },
-                // hasAllPermissionsOp && {
-                //   id: 'Order Processing',
-                //   title: 'Order Processing',
-                //   type: 'item',
-                //   url: '/orderprocessing'
-                // },
-                hasAllPermissionsBom && {
-                  id: 'production',
-                  title: 'Production',
-                  type: 'item',
-                  url: '/billofmateriallist'
-                },
-                hasAllPermissionsOp && {
-                  id: 'order processing',
-                  title: 'Order Processing',
-                  type: 'item',
-                  url: '/orderprocessinglist'
-                }
-              ]
-            }
-          ]
-        }
-        : {},
+      createConfig() === 'C' && {
+        type: 'group',
+        icon: icons.ProductionQuantityLimitsIcon,
+        children: [
+          {
+            id: 'Production Management',
+            title: 'Production Management',
+            type: 'collapse',
+            icon: icons.ProductionQuantityLimitsIcon,
+            children: [
+              hasAllPermissionsItem && {
+                id: 'Item List',
+                title: 'Item',
+                type: 'item',
+                url: '/productlist'
+              },
+              hasAllPermissionsOp && {
+                id: 'Order Processing',
+                title: 'Order Processing',
+                type: 'item',
+                url: '/orderprocessing'
+              },
+              hasAllPermissionsBom && {
+                id: 'production',
+                title: 'Production',
+                type: 'item',
+                url: '/billofmateriallist'
+              },
+              hasAllPermissionsOp && {
+                id: 'order processing',
+                title: 'Order Processing',
+                type: 'item',
+                url: '/orderprocessinglist'
+              },
+              {
+                id: 'productcosting',
+                title: 'Product Costing',
+                type: 'item',
+                url: '/productcosting'
+              },
+              {
+                id: 'recipemanagement',
+                title: 'Recipe Management',
+                type: 'item',
+                url: '/recipemanagement'
+              }
+            ]
+          }
+        ]
+      },
       {
         type: 'group',
-        icon: icons['ContactMailIcon'],
+        icon: icons.ContactMailIcon,
         children: [
           {
             id: 'auth',
             title: 'employee management',
             type: 'collapse',
-            icon: icons['ContactMailIcon'],
+            icon: icons.ContactMailIcon,
             children: [
-              // {
-              //   id: 'employee directory',
-              //   title: 'Employee Directory',
-              //   type: 'item',
-              //   url: '/employeedirectory'
-              // },
-
               hasAllPermissionsEmployee && {
                 id: 'Employee',
                 title: 'Employee',
@@ -698,32 +637,20 @@ const MenuItem = () => {
                 type: 'item',
                 url: '/Attendance'
               }
-              // {
-              //   id: 'Report',
-              //   title: 'Report',
-              //   type: 'item',
-              //   url: '/productionreport'
-              // }
             ]
           }
         ]
       },
       hasAllPermissionsCompany && {
         type: 'group',
-        icon: icons['StoreIcon'],
+        icon: icons.StoreIcon,
         children: [
           {
             id: 'auth',
             title: 'Company Management',
             type: 'collapse',
-            icon: icons['StoreIcon'],
+            icon: icons.StoreIcon,
             children: [
-              // {
-              //   id: 'Company Profile',
-              //   title: 'Company Profile',
-              //   type: 'item',
-              //   url: '/profile'
-              // },
               {
                 id: 'Company',
                 title: 'Company',
@@ -734,37 +661,35 @@ const MenuItem = () => {
           }
         ]
       },
-      createConfig() === 'C'
-        ? {
-          type: 'group',
-          icon: icons['PropaneTankIcon'],
-          children: [
-            {
-              id: 'auth',
-              title: 'Stock Management',
-              type: 'collapse',
-              icon: icons['PropaneTankIcon'],
-              children: [
-                {
-                  id: 'Stoke',
-                  title: 'Stock List',
-                  type: 'item',
-                  url: '/stocklist'
-                }
-              ]
-            }
-          ]
-        }
-        : {},
+      createConfig() === 'C' && {
+        type: 'group',
+        icon: icons.PropaneTankIcon,
+        children: [
+          {
+            id: 'auth',
+            title: 'Stock Management',
+            type: 'collapse',
+            icon: icons.PropaneTankIcon,
+            children: [
+              {
+                id: 'Stoke',
+                title: 'Stock List',
+                type: 'item',
+                url: '/stocklist'
+              }
+            ]
+          }
+        ]
+      },
       {
         type: 'group',
-        icon: icons['ScannerIcon'],
+        icon: icons.ScannerIcon,
         children: [
           {
             id: 'Machine Management',
             title: 'Machine Management',
             type: 'collapse',
-            icon: icons['ScannerIcon'],
+            icon: icons.ScannerIcon,
             children: [
               hasAllPermissionsMachine && {
                 id: 'Machine',
@@ -784,37 +709,19 @@ const MenuItem = () => {
                 type: 'item',
                 url: '/maintenschedulelist'
               }
-              // hasAllPermissionsRegularmaintenance && {
-              //   id: 'Regular maintenance',
-              //   title: 'Regular maintenance',
-              //   type: 'item',
-              //   url: '/regularmaintenancelist'
-              // },
-              // hasAllPermissionsPreventivemaintenance && {
-              //   id: 'Preventive maintenance',
-              //   title: 'Preventive maintenance',
-              //   type: 'item',
-              //   url: '/preventivemaintenancelist'
-              // },
-              // hasAllPermissionsBreackdownmaintenance && {
-              //   id: 'Breakdown maintenance',
-              //   title: 'Breakdown maintenance',
-              //   type: 'item',
-              //   url: '/breakdownmaintenancelist'
-              // }
             ]
           }
         ]
       },
       {
         type: 'group',
-        icon: icons['BusinessCenterIcon'],
+        icon: icons.BusinessCenterIcon,
         children: [
           {
             id: 'general Management',
             title: 'general Management',
             type: 'collapse',
-            icon: icons['BusinessCenterIcon'],
+            icon: icons.BusinessCenterIcon,
             children: [
               hasAllPermissionsAccount && {
                 id: 'Account',
@@ -840,12 +747,6 @@ const MenuItem = () => {
                 type: 'item',
                 url: '/itemsubcategorylist'
               },
-              // {
-              //   id: 'Wastage',
-              //   title: 'Wastage',
-              //   type: 'item',
-              //   url: '/wastagelist'
-              // },
               {
                 id: 'Maintenance Type',
                 title: 'Maintenance Type',
@@ -862,7 +763,7 @@ const MenuItem = () => {
           }
         ]
       }
-    ]
+    ].filter(Boolean)
   };
 };
 

@@ -770,6 +770,40 @@ export const VIEW_ALL_ITEM_SUB_CATEGORY_REQUEST = 'VIEW_ALL_ITEM_SUB_CATEGORY_RE
 export const VIEW_ALL_ITEM_SUB_CATEGORY_SUCCESS = 'VIEW_ALL_ITEM_SUB_CATEGORY_SUCCESS';
 export const VIEW_ALL_ITEM_SUB_CATEGORY_FAILURE = 'VIEW_ALL_ITEM_SUB_CATEGORY_FAILURE';
 
+// ########################################## RAW MATERIAL ###############################################################################################
+export const CREATE_RAW_MATERIAL_REQUEST = 'CREATE_RAW_MATERIAL_REQUEST';
+export const CREATE_RAW_MATERIAL_SUCCESS = 'CREATE_RAW_MATERIAL_SUCCESS';
+export const CREATE_RAW_MATERIAL_FAILURE = 'CREATE_RAW_MATERIAL_FAILURE';
+export const UPDATE_RAW_MATERIAL_REQUEST = 'UPDATE_RAW_MATERIAL_REQUEST';
+export const UPDATE_RAW_MATERIAL_SUCCESS = 'UPDATE_RAW_MATERIAL_SUCCESS';
+export const UPDATE_RAW_MATERIAL_FAILURE = 'UPDATE_RAW_MATERIAL_FAILURE';
+export const DELETE_RAW_MATERIAL_REQUEST = 'DELETE_RAW_MATERIAL_REQUEST';
+export const DELETE_RAW_MATERIAL_SUCCESS = 'DELETE_RAW_MATERIAL_SUCCESS';
+export const DELETE_RAW_MATERIAL_FAILURE = 'DELETE_RAW_MATERIAL_FAILURE';
+export const VIEW_RAW_MATERIAL_REQUEST = 'VIEW_RAW_MATERIAL_REQUEST';
+export const VIEW_RAW_MATERIAL_SUCCESS = 'VIEW_RAW_MATERIAL_SUCCESS';
+export const VIEW_RAW_MATERIAL_FAILURE = 'VIEW_RAW_MATERIAL_FAILURE';
+export const FETCH_ALL_RAW_MATERIAL_REQUEST = 'FETCH_ALL_RAW_MATERIAL_REQUEST';
+export const FETCH_ALL_RAW_MATERIAL_SUCCESS = 'FETCH_ALL_RAW_MATERIAL_SUCCESS';
+export const FETCH_ALL_RAW_MATERIAL_FAILURE = 'FETCH_ALL_RAW_MATERIAL_FAILURE';
+
+// ########################################## RECIPE ###############################################################################################
+export const CREATE_RECIPE_REQUEST = 'CREATE_RECIPE_REQUEST';
+export const CREATE_RECIPE_SUCCESS = 'CREATE_RECIPE_SUCCESS';
+export const CREATE_RECIPE_FAILURE = 'CREATE_RECIPE_FAILURE';
+export const UPDATE_RECIPE_REQUEST = 'UPDATE_RECIPE_REQUEST';
+export const UPDATE_RECIPE_SUCCESS = 'UPDATE_RECIPE_SUCCESS';
+export const UPDATE_RECIPE_FAILURE = 'UPDATE_RECIPE_FAILURE';
+export const DELETE_RECIPE_REQUEST = 'DELETE_RECIPE_REQUEST';
+export const DELETE_RECIPE_SUCCESS = 'DELETE_RECIPE_SUCCESS';
+export const DELETE_RECIPE_FAILURE = 'DELETE_RECIPE_FAILURE';
+export const VIEW_RECIPE_REQUEST = 'VIEW_RECIPE_REQUEST';
+export const VIEW_RECIPE_SUCCESS = 'VIEW_RECIPE_SUCCESS';
+export const VIEW_RECIPE_FAILURE = 'VIEW_RECIPE_FAILURE';
+export const FETCH_ALL_RECIPE_REQUEST = 'FETCH_ALL_RECIPE_REQUEST';
+export const FETCH_ALL_RECIPE_SUCCESS = 'FETCH_ALL_RECIPE_SUCCESS';
+export const FETCH_ALL_RECIPE_FAILURE = 'FETCH_ALL_RECIPE_FAILURE';
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++ ACCOUNTS +++++++++++++++++++++++
 export const GET_ALL_ACCOUNT_OPTIONS_REQUEST = 'GET_ALL_ACCOUNT_OPTIONS_REQUEST';
 export const GET_ALL_ACCOUNT_OPTIONS_SUCCESS = 'GET_ALL_ACCOUNT_OPTIONS_SUCCESS';
@@ -3573,6 +3607,129 @@ export const DeleteItemSubCategorySuccess = (data) => ({
 export const DeleteItemSubCategoryFailure = (error) => ({
   type: 'DELETE_ITEM_SUB_CATEGORY_FAILURE',
   payload: error
+});
+
+// +++++++++++++++++++++++++++++++++++++++++++++++RAW MATERIAL ++++++++++++++++++++++++++++++++++++
+export const createRawMaterialRequest = (data) => ({
+  type: 'CREATE_RAW_MATERIAL_REQUEST',
+  payload: data
+});
+export const createRawMaterialSuccess = (data) => ({
+  type: 'CREATE_RAW_MATERIAL_SUCCESS',
+  payload: data
+});
+export const createRawMaterialFailure = (error) => ({
+  type: 'CREATE_RAW_MATERIAL_FAILURE',
+  payload: error
+});
+export const updateRawMaterialRequest = (id, data) => ({
+    type: 'UPDATE_RAW_MATERIAL_REQUEST',
+    payload: { id, data }
+});
+export const updateRawMaterialSuccess = (data) => ({
+    type: 'UPDATE_RAW_MATERIAL_SUCCESS',
+    payload: data
+});
+export const updateRawMaterialFailure = (error) => ({
+    type: 'UPDATE_RAW_MATERIAL_FAILURE',
+    payload: error
+});
+export const deleteRawMaterialRequest = (id) => ({
+    type: 'DELETE_RAW_MATERIAL_REQUEST',
+    payload: id
+});
+export const deleteRawMaterialSuccess = (data) => ({
+    type: 'DELETE_RAW_MATERIAL_SUCCESS',
+    payload: data
+});
+export const deleteRawMaterialFailure = (error) => ({
+    type: 'DELETE_RAW_MATERIAL_FAILURE',
+    payload: error
+});
+export const viewRawMaterialRequest = (id) => ({
+    type: 'VIEW_RAW_MATERIAL_REQUEST',
+    payload: id
+});
+export const viewRawMaterialSuccess = (data) => ({
+    type: 'VIEW_RAW_MATERIAL_SUCCESS',
+    payload: data
+});
+export const viewRawMaterialFailure = (error) => ({
+    type: 'VIEW_RAW_MATERIAL_FAILURE',
+    payload: error
+});
+export const fetchAllRawMaterialRequest = (companyId) => ({
+    type: 'FETCH_ALL_RAW_MATERIAL_REQUEST',
+    payload: companyId
+});
+export const fetchAllRawMaterialSuccess = (data) => ({
+    type: 'FETCH_ALL_RAW_MATERIAL_SUCCESS',
+    payload: data
+});
+export const fetchAllRawMaterialFailure = (error) => ({
+    type: 'FETCH_ALL_RAW_MATERIAL_FAILURE',
+    payload: error
+});
+
+// +++++++++++++++++++++++++++++++++++++++++++++++ RECIPE ++++++++++++++++++++++++++++++++++++
+export const createRecipeRequest = (data) => ({
+  type: 'CREATE_RECIPE_REQUEST',
+  payload: data
+});
+export const createRecipeSuccess = (data) => ({
+  type: 'CREATE_RECIPE_SUCCESS',
+  payload: data
+});
+export const createRecipeFailure = (error) => ({
+  type: 'CREATE_RECIPE_FAILURE',
+  payload: error
+});
+export const updateRecipeRequest = (data) => ({
+    type: 'UPDATE_RECIPE_REQUEST',
+      payload: data
+});
+export const updateRecipeSuccess = (data) => ({
+    type: 'UPDATE_RECIPE_SUCCESS',
+    payload: data
+});
+export const updateRecipeFailure = (error) => ({
+    type: 'UPDATE_RECIPE_FAILURE',
+    payload: error
+});
+export const deleteRecipeRequest = (data) => ({
+    type: 'DELETE_RECIPE_REQUEST',
+      payload: data
+});
+export const deleteRecipeSuccess = (data) => ({
+    type: 'DELETE_RECIPE_SUCCESS',
+    payload: data
+});
+export const deleteRecipeFailure = (error) => ({
+    type: 'DELETE_RECIPE_FAILURE',
+    payload: error
+});
+export const viewRecipeRequest = (data) => ({
+    type: 'VIEW_RECIPE_REQUEST',
+      payload: data
+});
+export const viewRecipeSuccess = (data) => ({
+    type: 'VIEW_RECIPE_SUCCESS',
+    payload: data
+});
+export const viewRecipeFailure = (error) => ({
+    type: 'VIEW_RECIPE_FAILURE',
+    payload: error
+});
+export const fetchAllRecipeRequest = () => ({
+    type: 'FETCH_ALL_RECIPE_REQUEST'
+});
+export const fetchAllRecipeSuccess = (data) => ({
+    type: 'FETCH_ALL_RECIPE_SUCCESS',
+    payload: data
+});
+export const fetchAllRecipeFailure = (error) => ({
+    type: 'FETCH_ALL_RECIPE_FAILURE',
+    payload: error
 });
 
 // ############################################################# LEDGER SELECT OPTIONS #################

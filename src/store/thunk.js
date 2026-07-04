@@ -726,6 +726,40 @@ import {
   getAllItemSubCategorySuccess,
   getAllItemSubCategoryFailure,
 
+  // RAW MATERIAL +++++++++++++
+  createRawMaterialRequest,
+  createRawMaterialSuccess,
+  createRawMaterialFailure,
+  updateRawMaterialRequest,
+  updateRawMaterialSuccess,
+  updateRawMaterialFailure,
+  deleteRawMaterialRequest,
+  deleteRawMaterialSuccess,
+  deleteRawMaterialFailure,
+  viewRawMaterialRequest,
+  viewRawMaterialSuccess,
+  viewRawMaterialFailure,
+  fetchAllRawMaterialRequest,
+  fetchAllRawMaterialSuccess,
+  fetchAllRawMaterialFailure,
+
+  // RECIPE +++++++++++++
+  fetchAllRecipeRequest,
+  fetchAllRecipeSuccess,
+  fetchAllRecipeFailure,
+  viewRecipeRequest,
+  viewRecipeSuccess,
+  viewRecipeFailure,
+  createRecipeRequest,
+  createRecipeSuccess,
+  createRecipeFailure,
+  updateRecipeRequest,
+  updateRecipeSuccess,
+  updateRecipeFailure,
+  deleteRecipeRequest,
+  deleteRecipeSuccess,
+  deleteRecipeFailure,
+
   // LEDGER OPTIONS +++++++++++++
   fetchAllAccountOptionsRequest,
   fetchAllAccountOptionsSuccess,
@@ -826,11 +860,11 @@ import {
   // RAW MATERIAL AND FINISHED GOODS +++++++++++++
 
   fetchAllFinishedGoodsRequest,
-fetchAllFinishedGoodsSuccess,
-fetchAllFinishedGoodsFailure,
-fetchAllRawMaterialsRequest,
-fetchAllRawMaterialsSuccess,
-fetchAllRawMaterialsFailure
+  fetchAllFinishedGoodsSuccess,
+  fetchAllFinishedGoodsFailure,
+  fetchAllRawMaterialsRequest,
+  fetchAllRawMaterialsSuccess,
+  fetchAllRawMaterialsFailure
 } from './actions';
 import { jwtDecode } from 'jwt-decode';
 const createConfig = () => {
@@ -7500,6 +7534,8 @@ export const viewAllItemSubCategory = (params = {}) => {
   };
 };
 
+
+
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ SELECT LEDGR GROUP +++++++++++++++++++++++++++++++++++++++++++++
 
 export const fetchAllAccountOptions = (navigate) => {
@@ -7659,7 +7695,7 @@ export const deleteCashLedgerSettlement = (payload, navigate) => {
     dispatch(deleteCashLedgerSettlementRequest());
     try {
       const config = createConfig();
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/ledger/C_ledger_settlement`, payload, config); 
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/ledger/C_ledger_settlement`, payload, config);
 
       const settlementData = response;
       toast.success(response.data.message, {
@@ -7671,7 +7707,7 @@ export const deleteCashLedgerSettlement = (payload, navigate) => {
       return settlementData;
     } catch (error) {
       dispatch(deleteCashLedgerSettlementFailure(error.message));
-      
+
       if (error.response && error.response.status === 401) {
         navigate('/');
       } else {
@@ -8463,6 +8499,273 @@ export const getAllRawMaterials = (params = {}) => {
       return data;
     } catch (error) {
       dispatch(fetchAllRawMaterialsFailure(error.message));
+    }
+  };
+};
+
+// ++++++++++++++++++++++++++++++++++++++++++++ RAW MATERIAL +++++++++++++++++++++++++++++++++++++++++++++++++++
+
+export const fetchAllRawMaterial = () => {
+  return async (dispatch) => {
+    const companyId = sessionStorage.getItem('companyId');
+    if (!companyId) {
+        const errorMsg = 'Company ID not found. Please log in again.';
+        dispatch(fetchAllRawMaterialFailure(errorMsg));
+        toast.error(errorMsg);
+        return;
+    }
+
+    dispatch(fetchAllRawMaterialRequest(companyId));
+    try {
+      const config = createConfig();
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/raw-material/${companyId}`,
+        config
+      );
+      const data = response.data.data;
+      dispatch(fetchAllRawMaterialSuccess(data));
+      return data;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to fetch raw materials';
+      dispatch(fetchAllRawMaterialFailure(errorMsg));
+      toast.error(errorMsg);
+    }
+  };
+};
+
+export const viewRawMaterial = (id) => {
+  return async (dispatch) => {
+    dispatch(viewRawMaterialRequest(id));
+    try {
+      const config = createConfig();
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/raw-material/${id}`, config);
+      const data = response.data.data;
+      dispatch(viewRawMaterialSuccess(data));
+      return data;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to fetch raw material details';
+      dispatch(viewRawMaterialFailure(errorMsg));
+      toast.error(errorMsg);
+    }
+  };
+};
+
+export const createRawMaterial = (data, navigate) => {
+  return async (dispatch) => {
+    const companyId = sessionStorage.getItem('companyId');
+    const payload = { ...data, companyId: companyId };
+
+    dispatch(createRawMaterialRequest(payload));
+    try {
+      const config = createConfig();
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/raw-material`, payload, config);
+      const newRawMaterial = response.data.data;
+      dispatch(createRawMaterialSuccess(newRawMaterial));
+      toast.success(response.data.message || 'Raw Material Created Successfully!', {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000,
+      });
+      return newRawMaterial;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to create raw material';
+      dispatch(createRawMaterialFailure(errorMsg));
+      if (error.response?.status === 401) {
+        navigate('/');
+      } else {
+        toast.error(errorMsg);
+      }
+      throw error;
+    }
+  };
+};
+
+export const updateRawMaterial = (id, data, navigate) => {
+  return async (dispatch) => {
+    // The backend handles 'updatedBy', so we create a payload without it.
+    const payload = {
+        name: data.name,
+        rate_per_kg: data.rate_per_kg
+        // Add any other fields from 'data' that are safe to send
+    };
+
+    dispatch(updateRawMaterialRequest(id, payload));
+    try {
+      const config = createConfig();
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/raw-material/${id}`, payload, config);
+      const updatedRawMaterial = response.data;
+      dispatch(updateRawMaterialSuccess(updatedRawMaterial));
+      toast.success(response.data.message || 'Raw Material Updated Successfully!', {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000,
+      });
+      return updatedRawMaterial;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to update raw material';
+      dispatch(updateRawMaterialFailure(errorMsg));
+      if (error.response?.status === 401) {
+        navigate('/');
+      } else {
+        toast.error(errorMsg);
+      }
+      throw error;
+    }
+  };
+};
+
+export const deleteRawMaterial = (id, navigate) => {
+  return async (dispatch) => {
+    dispatch(deleteRawMaterialRequest(id));
+    try {
+      const config = createConfig();
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/raw-material/${id}`, config);
+      dispatch(deleteRawMaterialSuccess(id));
+      toast.success(response.data.message || 'Raw Material Deleted Successfully!', {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000,
+      });
+      return id;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to delete raw material';
+      dispatch(deleteRawMaterialFailure(errorMsg));
+      if (error.response?.status === 401) {
+        navigate('/');
+      } else {
+        toast.error(errorMsg);
+      }
+      throw error;
+    }
+  };
+};
+
+// ++++++++++++++++++++++++++++++++++++++++++++ RECIPE +++++++++++++++++++++++++++++++++++++++++++++++++++
+
+export const fetchAllRecipe = () => {
+  return async (dispatch) => {
+    const companyId = sessionStorage.getItem('companyId');
+    if (!companyId) {
+      const errorMsg = 'Company ID not found. Please log in again.';
+      dispatch(fetchAllRecipeFailure(errorMsg));
+      toast.error(errorMsg);
+      return;
+    }
+
+    dispatch(fetchAllRecipeRequest(companyId));
+    try {
+      const config = createConfig();
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/recipe/${companyId}`,
+        config
+      );
+      const data = response.data.data;
+      dispatch(fetchAllRecipeSuccess(data));
+      return data;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to fetch recipes';
+      dispatch(fetchAllRecipeFailure(errorMsg));
+      toast.error(errorMsg);
+    }
+  };
+};
+
+export const viewRecipe = (id) => {
+  return async (dispatch) => {
+    dispatch(viewRecipeRequest(id));
+    try {
+      const config = createConfig();
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/recipe/${id}`, config);
+      const data = response.data.data;
+      dispatch(viewRecipeSuccess(data));
+      return data;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to fetch recipe details';
+      dispatch(viewRecipeFailure(errorMsg));
+      toast.error(errorMsg);
+    }
+  };
+};
+
+export const createRecipe = (data, navigate) => {
+  return async (dispatch) => {
+    const companyId = sessionStorage.getItem('companyId');
+    const payload = { ...data, companyId: companyId };
+
+    dispatch(createRecipeRequest(payload));
+    try {
+      const config = createConfig();
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/recipe`, payload, config);
+      const newRecipe = response.data.data;
+      dispatch(createRecipeSuccess(newRecipe));
+      toast.success(response.data.message || 'Recipe Created Successfully!', {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000,
+      });
+      return newRecipe;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to create recipe';
+      dispatch(createRecipeFailure(errorMsg));
+      if (error.response?.status === 401) {
+        navigate('/');
+      } else {
+        toast.error(errorMsg);
+      }
+      throw error;
+    }
+  };
+};
+
+export const updateRecipe = (id, data, navigate) => {
+  return async (dispatch) => {
+    // The backend handles 'updatedBy', so we create a payload without it.
+    const payload = {
+      name: data.name,
+      // Add any other fields from 'data' that are safe to send
+    };
+
+    dispatch(updateRecipeRequest(id, payload));
+    try {
+      const config = createConfig();
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/recipe/${id}`, payload, config);
+      const updatedRecipe = response.data;
+      dispatch(updateRecipeSuccess(updatedRecipe));
+      toast.success(response.data.message || 'Recipe Updated Successfully!', {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000,
+      });
+      return updatedRecipe;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to update recipe';
+      dispatch(updateRecipeFailure(errorMsg));
+      if (error.response?.status === 401) {
+        navigate('/');
+      } else {
+        toast.error(errorMsg);
+      }
+      throw error;
+    }
+  };
+};
+
+export const deleteRecipe = (id, navigate) => {
+  return async (dispatch) => {
+    dispatch(deleteRecipeRequest(id));
+    try {
+      const config = createConfig();
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/recipe/${id}`, config);
+      dispatch(deleteRecipeSuccess(id));
+      toast.success(response.data.message || 'Recipe Deleted Successfully!', {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000,
+      });
+      return id;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to delete recipe';
+      dispatch(deleteRecipeFailure(errorMsg));
+      if (error.response?.status === 401) {
+        navigate('/');
+      } else {
+        toast.error(errorMsg);
+      }
+      throw error;
     }
   };
 };

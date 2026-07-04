@@ -4,7 +4,7 @@ import { useMediaQuery } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { viewProduct } from 'store/thunk';
+import { viewRawMaterial } from 'store/thunk';
 
 const Rawmaterialview = () => {
   const isMobile = useMediaQuery('(max-width:600px)');
@@ -15,7 +15,7 @@ const Rawmaterialview = () => {
 
   //called api for view data
   useEffect(() => {
-    dispatch(viewProduct(id))
+    dispatch(viewRawMaterial(id))
       .then((data) => {
         setData(data);
       })
