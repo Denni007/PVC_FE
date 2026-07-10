@@ -107,7 +107,7 @@ const RecipeManagementPage = () => {
         </Box>
 
         {value === 0 && <RawMaterialList searchQuery={searchQuery} key={`material-list-${refreshKey}`} />}
-        {value === 1 && <RecipeList searchQuery={searchQuery} key={`recipe-list-${refreshKey}`} />}
+        {value === 1 && <RecipeList searchQuery={searchQuery} rawMaterials={rawMaterials} key={`recipe-list-${refreshKey}`} />}
 
         <AddRawMaterialModal open={addMaterialOpen} handleClose={handleCloseMaterialModal} />
         <AddRecipeModal open={addRecipeOpen} handleClose={handleCloseRecipeModal} rawMaterials={rawMaterials} />

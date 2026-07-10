@@ -29,6 +29,7 @@ import ItemGroup from 'component/itemgruop';
 
 const columns = [
   { id: 'name', label: 'Item Group Name', align: 'center' },
+  { id: 'itemType', label: 'Item Type', align: 'center' },
   { id: 'createdby', label: 'Created By', align: 'center' },
   { id: 'updatedby', label: 'Updated By', align: 'center' },
   { id: 'action', label: 'Action', align: 'center' }
@@ -174,7 +175,7 @@ const ItemgropuList = () => {
   return (
     <Card style={{ width: '100%', padding: '25px' }}>
       <Typography variant="h4" align="center" id="mycss">
-        Item Category List
+        Item Group List
       </Typography>
       <SearchContainer style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Button
@@ -246,6 +247,8 @@ const ItemgropuList = () => {
                       product.groupCreateUser?.username
                     ) : column.id === 'updatedby' ? (
                       product.groupUpdateUser?.username
+                    ) : column.id === 'itemType' ? (
+                      product.ItemType?.name || product.itemType?.name || product.itemTypeName || '-'
                     ) : (
                       product[column.id]
                     )}

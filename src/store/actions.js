@@ -770,6 +770,23 @@ export const VIEW_ALL_ITEM_SUB_CATEGORY_REQUEST = 'VIEW_ALL_ITEM_SUB_CATEGORY_RE
 export const VIEW_ALL_ITEM_SUB_CATEGORY_SUCCESS = 'VIEW_ALL_ITEM_SUB_CATEGORY_SUCCESS';
 export const VIEW_ALL_ITEM_SUB_CATEGORY_FAILURE = 'VIEW_ALL_ITEM_SUB_CATEGORY_FAILURE';
 
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ITEM TYPE +++++++++++++++++++++++++++
+export const CREATE_ITEM_TYPE_REQUEST = 'CREATE_ITEM_TYPE_REQUEST';
+export const CREATE_ITEM_TYPE_SUCCESS = 'CREATE_ITEM_TYPE_SUCCESS';
+export const CREATE_ITEM_TYPE_FAILURE = 'CREATE_ITEM_TYPE_FAILURE';
+export const UPDATE_ITEM_TYPE_REQUEST = 'UPDATE_ITEM_TYPE_REQUEST';
+export const UPDATE_ITEM_TYPE_SUCCESS = 'UPDATE_ITEM_TYPE_SUCCESS';
+export const UPDATE_ITEM_TYPE_FAILURE = 'UPDATE_ITEM_TYPE_FAILURE';
+export const VIEW_ITEM_TYPE_REQUEST = 'VIEW_ITEM_TYPE_REQUEST';
+export const VIEW_ITEM_TYPE_SUCCESS = 'VIEW_ITEM_TYPE_SUCCESS';
+export const VIEW_ITEM_TYPE_FAILURE = 'VIEW_ITEM_TYPE_FAILURE';
+export const DELETE_ITEM_TYPE_REQUEST = 'DELETE_ITEM_TYPE_REQUEST';
+export const DELETE_ITEM_TYPE_SUCCESS = 'DELETE_ITEM_TYPE_SUCCESS';
+export const DELETE_ITEM_TYPE_FAILURE = 'DELETE_ITEM_TYPE_FAILURE';
+export const VIEW_ALL_ITEM_TYPE_REQUEST = 'VIEW_ALL_ITEM_TYPE_REQUEST';
+export const VIEW_ALL_ITEM_TYPE_SUCCESS = 'VIEW_ALL_ITEM_TYPE_SUCCESS';
+export const VIEW_ALL_ITEM_TYPE_FAILURE = 'VIEW_ALL_ITEM_TYPE_FAILURE';
+
 // ########################################## RAW MATERIAL ###############################################################################################
 export const CREATE_RAW_MATERIAL_REQUEST = 'CREATE_RAW_MATERIAL_REQUEST';
 export const CREATE_RAW_MATERIAL_SUCCESS = 'CREATE_RAW_MATERIAL_SUCCESS';
@@ -3606,6 +3623,64 @@ export const DeleteItemSubCategorySuccess = (data) => ({
 });
 export const DeleteItemSubCategoryFailure = (error) => ({
   type: 'DELETE_ITEM_SUB_CATEGORY_FAILURE',
+  payload: error
+});
+
+// +++++++++++++++++++++++++++++++++++++++++++++++ITEM TYPE ++++++++++++++++++++++++++++++++++++
+
+export const CreateItemTypeRequest = () => ({
+  type: 'CREATE_ITEM_TYPE_REQUEST'
+});
+export const CreateItemTypeSuccess = (data) => ({
+  type: 'CREATE_ITEM_TYPE_SUCCESS',
+  payload: data
+});
+export const CreateItemTypeFailure = (error) => ({
+  type: 'CREATE_ITEM_TYPE_FAILURE',
+  payload: error
+});
+export const ViewItemTypeRequest = () => ({
+  type: 'VIEW_ITEM_TYPE_REQUEST'
+});
+export const ViewItemTypeSuccess = (data) => ({
+  type: 'VIEW_ITEM_TYPE_SUCCESS',
+  payload: data
+});
+export const ViewItemTypeFailure = (error) => ({
+  type: 'VIEW_ITEM_TYPE_FAILURE',
+  payload: error
+});
+export const getAllItemTypeRequest = () => ({
+  type: 'VIEW_ALL_ITEM_TYPE_REQUEST'
+});
+export const getAllItemTypeSuccess = (data) => ({
+  type: 'VIEW_ALL_ITEM_TYPE_SUCCESS',
+  payload: data
+});
+export const getAllItemTypeFailure = (error) => ({
+  type: 'VIEW_ALL_ITEM_TYPE_FAILURE',
+  payload: error
+});
+export const UpdateItemTypeRequest = () => ({
+  type: 'UPDATE_ITEM_TYPE_REQUEST'
+});
+export const UpdateItemTypeSuccess = (data) => ({
+  type: 'UPDATE_ITEM_TYPE_SUCCESS',
+  payload: data
+});
+export const UpdateItemTypeFailure = (error) => ({
+  type: 'UPDATE_ITEM_TYPE_FAILURE',
+  payload: error
+});
+export const DeleteItemTypeRequest = () => ({
+  type: 'DELETE_ITEM_TYPE_REQUEST'
+});
+export const DeleteItemTypeSuccess = (data) => ({
+  type: 'DELETE_ITEM_TYPE_SUCCESS',
+  payload: data
+});
+export const DeleteItemTypeFailure = (error) => ({
+  type: 'DELETE_ITEM_TYPE_FAILURE',
   payload: error
 });
 

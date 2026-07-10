@@ -18,7 +18,7 @@ import EditRawMaterialModal from './EditRawMaterialModal';
 import { Edit, Delete } from '@mui/icons-material';
 import useCan from 'views/permission managenment/checkpermissionvalue';
 
-const Rawmateriallist = ({ searchQuery }) => {
+const Rawmateriallist = ({ searchQuery = '' }) => {
   const { canUpdateItem, canDeleteItem } = useCan();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -53,7 +53,7 @@ const Rawmateriallist = ({ searchQuery }) => {
   useEffect(() => {
     if (rawMaterials) {
       const filtered = rawMaterials.filter((material) =>
-        material.name.toLowerCase().includes(searchQuery.toLowerCase())
+        (material.name || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredMaterials(filtered);
     }
@@ -112,7 +112,7 @@ const Rawmateriallist = ({ searchQuery }) => {
               </Box>
               <Box sx={{ mt: 2, textAlign: 'left' }}>
                 <Typography variant="caption" display="block" sx={{color: 'text.secondary'}}>RATE / KG</Typography>
-                <Typography variant="h5" sx={{fontWeight: 'bold'}}>₹{material.rate_per_kg}</Typography>
+                <Typography variant="h5" sx={{fontWeight: 'bold'}}>Rs. {material.rate_per_kg}</Typography>
               </Box>
             </Paper>
           </Grid>

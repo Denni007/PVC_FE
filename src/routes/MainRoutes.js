@@ -9,6 +9,7 @@ import Pagenotification from 'component/notification';
 import ItemgropuList from 'views/production managenment/Item Group/itemgrouplist';
 import ItemcategoryList from 'views/production managenment/Item Category/itemcategorylist';
 import ItemSubCategoryList from 'views/production managenment/Item Sub Category/itemsubcategorylist';
+import ItemTypeList from 'views/production managenment/Item Type/itemtypelist';
 import Accountledgerlist from 'component/reports/financial report/accountledgerlist';
 import Daybookledgerlist from 'component/reports/financial report/daybookledgerlist';
 import Maintenchedulelist from 'views/machine managenment/mainten shedule/maintenschedulelist';
@@ -427,6 +428,10 @@ const MainRoutes = {
     {
       path: '/itemsubcategorylist',
       element: <ProtectedRoute element={ItemSubCategoryList} resource="Item Sub Category" permissionName="view_all_itemSubCategory" />
+    },
+    {
+      path: '/itemtypelist',
+      element: <ProtectedRoute element={ItemTypeList} resource="Item Type" permissionName="view_all_itemType" />
     },
 
     // ++++++++++++++++++++++++++++++++++++++++++++ Routes of credit note cash +++++++++++++++++++++++++++++++++++++++++++++++++++

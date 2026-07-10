@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Box, Typography, TextField, Button, Grid } from '@mui/material';
 import { updateRawMaterial } from 'store/thunk';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -31,6 +32,8 @@ const EditRawMaterialModal = ({ open, handleClose, material }) => {
 
   const handleSubmit = async () => {
     if (!material) return;
+    if (!name.trim()) return toast.error('Please provide a material name.');
+    if (rate === '' || Number(rate) < 0) return toast.error('Please provide a valid rate.');
 
     try {
       await dispatch(updateRawMaterial(material.id, { name: name, rate_per_kg: rate }, navigate));

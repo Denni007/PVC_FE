@@ -725,6 +725,21 @@ import {
   getAllItemSubCategoryRequest,
   getAllItemSubCategorySuccess,
   getAllItemSubCategoryFailure,
+  CreateItemTypeRequest,
+  CreateItemTypeSuccess,
+  CreateItemTypeFailure,
+  ViewItemTypeRequest,
+  ViewItemTypeSuccess,
+  ViewItemTypeFailure,
+  getAllItemTypeRequest,
+  getAllItemTypeSuccess,
+  getAllItemTypeFailure,
+  UpdateItemTypeRequest,
+  UpdateItemTypeSuccess,
+  UpdateItemTypeFailure,
+  DeleteItemTypeRequest,
+  DeleteItemTypeSuccess,
+  DeleteItemTypeFailure,
 
   // RAW MATERIAL +++++++++++++
   createRawMaterialRequest,
@@ -6997,6 +7012,21 @@ export const fetchAllItemGroup = (params = {}) => {
     }
   };
 };
+export const fetchAllItemGroupByType = (typeId) => {
+  return async (dispatch) => {
+    dispatch(fetchAllItemGroupRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/itemGroup/get_all_itemGroup_by_type/${typeId}`, config);
+      const data = response.data.data;
+      dispatch(fetchAllItemGroupSuccess(data));
+      return data;
+    } catch (error) {
+      dispatch(fetchAllItemGroupFailure(error.message));
+      return [];
+    }
+  };
+};
 export const ItemGroupview = (id) => {
   return async (dispatch) => {
     dispatch(ViewItemGroupRequest());
@@ -7530,6 +7560,103 @@ export const viewAllItemSubCategory = (params = {}) => {
     } catch (error) {
       dispatch(getAllItemSubCategoryFailure(error.message));
       if (error.response?.status === 401) navigate('/');
+    }
+  };
+};
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ITEM TYPE +++++++++++++++++++++++++++++++++++++++++++++
+
+export const createItemType = (data, navigate) => {
+  return async (dispatch) => {
+    dispatch(CreateItemTypeRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/itemType/create_itemType`, data, config);
+      dispatch(CreateItemTypeSuccess(response));
+      toast.success(response.data.message, {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000
+      });
+      return response;
+    } catch (error) {
+      dispatch(CreateItemTypeFailure(error.message));
+      if (error.response?.status === 401) navigate('/');
+      else toast.error(error.response?.data?.message, { autoClose: 1000 });
+    }
+  };
+};
+
+export const updateItemType = (id, data, navigate) => {
+  return async (dispatch) => {
+    dispatch(UpdateItemTypeRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/itemType/update_itemType/${id}`, data, config);
+      dispatch(UpdateItemTypeSuccess(response));
+      toast.success(response.data.message, {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000
+      });
+      return response;
+    } catch (error) {
+      dispatch(UpdateItemTypeFailure(error.message));
+      if (error.response?.status === 401) navigate('/');
+      else toast.error(error.response?.data?.message);
+    }
+  };
+};
+
+export const viewItemType = (id) => {
+  return async (dispatch) => {
+    dispatch(ViewItemTypeRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/itemType/view_itemType/${id}`, config);
+      const data = response.data.data;
+      dispatch(ViewItemTypeSuccess(data));
+      return data;
+    } catch (error) {
+      toast.error(error.response?.data?.error);
+      dispatch(ViewItemTypeFailure(error.message));
+    }
+  };
+};
+
+export const deleteItemType = (id, navigate) => {
+  return async (dispatch) => {
+    dispatch(DeleteItemTypeRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/itemType/delete_itemType/${id}`, config);
+      const data = response.data.data;
+      dispatch(DeleteItemTypeSuccess(data));
+      toast.success(response.data.message, {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000
+      });
+      return data;
+    } catch (error) {
+      dispatch(DeleteItemTypeFailure(error.message));
+      if (error.response?.status === 401) navigate('/');
+      else toast.error(error.response?.data?.message, { autoClose: 1000 });
+    }
+  };
+};
+
+export const viewAllItemType = (params = {}) => {
+  return async (dispatch) => {
+    dispatch(getAllItemTypeRequest());
+    try {
+      const config = createConfig();
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/itemType/get_all_itemType`, {
+        ...config,
+        params
+      });
+      const data = response.data.data;
+      dispatch(getAllItemTypeSuccess(data));
+      return data;
+    } catch (error) {
+      dispatch(getAllItemTypeFailure(error.message));
     }
   };
 };
@@ -8538,7 +8665,7 @@ export const viewRawMaterial = (id) => {
     dispatch(viewRawMaterialRequest(id));
     try {
       const config = createConfig();
-      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/raw-material/${id}`, config);
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/raw-material/view/${id}`, config);
       const data = response.data.data;
       dispatch(viewRawMaterialSuccess(data));
       return data;
@@ -8672,7 +8799,7 @@ export const viewRecipe = (id) => {
     dispatch(viewRecipeRequest(id));
     try {
       const config = createConfig();
-      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/recipe/${id}`, config);
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/recipe/view/${id}`, config);
       const data = response.data.data;
       dispatch(viewRecipeSuccess(data));
       return data;
@@ -8715,17 +8842,21 @@ export const createRecipe = (data, navigate) => {
 
 export const updateRecipe = (id, data, navigate) => {
   return async (dispatch) => {
-    // The backend handles 'updatedBy', so we create a payload without it.
     const payload = {
       name: data.name,
-      // Add any other fields from 'data' that are safe to send
+      total_usage: data.total_usage,
+      total_amount: data.total_amount,
+      per_kg_value: data.per_kg_value,
+      production_cost: data.production_cost,
+      final_value: data.final_value,
+      items: data.items
     };
 
     dispatch(updateRecipeRequest(id, payload));
     try {
       const config = createConfig();
       const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/recipe/${id}`, payload, config);
-      const updatedRecipe = response.data;
+      const updatedRecipe = response.data.data || response.data;
       dispatch(updateRecipeSuccess(updatedRecipe));
       toast.success(response.data.message || 'Recipe Updated Successfully!', {
         icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
@@ -8765,6 +8896,43 @@ export const deleteRecipe = (id, navigate) => {
       } else {
         toast.error(errorMsg);
       }
+      throw error;
+    }
+  };
+};
+
+// ++++++++++++++++++++++++++++++++++++++++++++ COSTING SETTING +++++++++++++++++++++++++++++++++++++++++++++++++++
+
+export const fetchCostingSettingByScope = (scope = {}) => {
+  return async () => {
+    try {
+      const config = createConfig();
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/costing-setting/scope`, {
+        ...config,
+        params: scope
+      });
+      return response.data.data;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to fetch costing setting';
+      toast.error(errorMsg);
+      throw error;
+    }
+  };
+};
+
+export const saveCostingSettingByScope = (data) => {
+  return async () => {
+    try {
+      const config = createConfig();
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/costing-setting/scope`, data, config);
+      toast.success(response.data.message || 'Costing setting saved successfully', {
+        icon: <img src={require('../assets/images/images.png')} width={'24px'} height={'24px'} alt="success" />,
+        autoClose: 1000
+      });
+      return response.data.data;
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Failed to save costing setting';
+      toast.error(errorMsg);
       throw error;
     }
   };

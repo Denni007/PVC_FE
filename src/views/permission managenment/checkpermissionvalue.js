@@ -923,6 +923,24 @@ const useCan = () => {
     return checkPermission('Item Sub Category', 'update_itemSubCategory');
   };
 
+  //  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Item Type ++++++++++++++++++++++++
+
+  const canCreateItemType = () => {
+    return checkPermission('Item Type', 'create_itemType');
+  };
+  const canViewItemType = () => {
+    return checkPermission('Item Type', 'view_single_itemType');
+  };
+  const canViewAllItemType = () => {
+    return checkPermission('Item Type', 'view_all_itemType');
+  };
+  const canUpdateItemType = () => {
+    return checkPermission('Item Type', 'update_itemType');
+  };
+  const canDeleteItemType = () => {
+    return checkPermission('Item Type', 'delete_itemType');
+  };
+
   // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Accounts +++++++++++++++++++++++++++++++++
 
   const canseecreateAccount = () => {
@@ -1356,6 +1374,12 @@ const useCan = () => {
     canseeUpdateitemsubcategory,
     canseeDeleteitemsubcategory,
     canseeGetallitemsubcategory,
+    // ITEM TYPE ++++++++++
+    canCreateItemType,
+    canViewItemType,
+    canViewAllItemType,
+    canUpdateItemType,
+    canDeleteItemType,
     // ACCOUNTS ++++++++++++++
     canseecreateAccount,
     canseeupdateAccount,

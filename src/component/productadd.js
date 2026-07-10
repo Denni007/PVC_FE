@@ -10,14 +10,17 @@ import {
   createProduct,
   fetchAllItemcategory,
   fetchAllItemGroup,
+  fetchAllItemGroupByType,
   getAllItemSubCategoryByCategory,
   updateProduct,
+  viewAllItemType,
   viewProduct
 } from 'store/thunk';
 import { useNavigate } from 'react-router';
 import ItemGroup from './itemgruop';
 import Itemcategory from './itemcategory';
 import ItemSubCategory from './ItemSubCategory';
+import ItemType from './itemtype';
 import useCan from 'views/permission managenment/checkpermissionvalue';
 
 const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUpdated }) => {
@@ -31,9 +34,11 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { canCreateItemgroup, canseeitemcategory, canseeitemsubcategory } = useCan();
+  const { canCreateItemgroup, canseeitemcategory, canseeitemsubcategory, canCreateItemType } = useCan();
   const [loading, setLoading] = React.useState(false);
-  const [itemtype, setItemType] = React.useState('Product');
+  const [itemTypeOptions, setItemTypeOptions] = React.useState([]);
+  const [selectedItemType, setSelectedItemType] = React.useState(null);
+  const [itemTypeDrawerOpen, setItemTypeDrawerOpen] = React.useState(false);
   const [openingstock, setOpeningStock] = React.useState(true);
   const [nagativeqty, setNagativeQty] = React.useState(false);
   const [lowstock, setLowStock] = React.useState(false);
@@ -55,12 +60,15 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
   const [canCreategroupvalue, setCanCreategroupvalue] = React.useState(null);
   const [canCreatecategoryvalue, setCanCreatecategoryvalue] = React.useState(null);
   const [canCreateSubCategoryvalue, setCanCreateSubCategoryvalue] = React.useState(null);
+  const [canCreateTypevalue, setCanCreateTypevalue] = React.useState(null);
   const [formData, setFormData] = React.useState({
     productname: '',
     description: '',
+    itemTypeId: '',
     itemGroupId: '',
     itemCategoryId: '',
     itemSubCategoryId: '',
+    size: '',
     unit: '',
     salesprice: 0,
     purchaseprice: 0,
@@ -74,7 +82,8 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
     setCanCreategroupvalue(canCreateItemgroup());
     setCanCreatecategoryvalue(canseeitemcategory());
     setCanCreateSubCategoryvalue(canseeitemsubcategory());
-  }, [canCreateItemgroup, canseeitemcategory, canseeitemsubcategory]);
+    setCanCreateTypevalue(canCreateItemType());
+  }, [canCreateItemgroup, canseeitemcategory, canseeitemsubcategory, canCreateItemType]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -84,8 +93,23 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
     }));
   };
 
-  const handleItem = (e) => {
-    setItemType(e.target.value);
+  const handleItem = (selectedOption) => {
+    if (selectedOption?.value === 'new_type') {
+      setItemTypeDrawerOpen(true);
+    } else {
+      setSelectedItemType(selectedOption || null);
+      setSelectedItemGroup('');
+      setItemgroupname('');
+      setItemcategoryname('');
+      setItemSubCategoryName('');
+      setFormData((previousData) => ({
+        ...previousData,
+        itemTypeId: selectedOption?.value || '',
+        itemGroupId: '',
+        itemCategoryId: '',
+        itemSubCategoryId: ''
+      }));
+    }
   };
 
   const handleOpeningStock = (e) => {
@@ -127,8 +151,18 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
 
   React.useEffect(() => {
     const itemgroup = async () => {
+      if (!formData.itemTypeId) {
+        setItemgroupOptions([]);
+        return;
+      }
       try {
-        const itemgroup = await dispatch(fetchAllItemGroup());
+        let itemgroup = await dispatch(fetchAllItemGroupByType(formData.itemTypeId));
+        if (!Array.isArray(itemgroup) || !itemgroup.length) {
+          const allGroups = await dispatch(fetchAllItemGroup());
+          itemgroup = Array.isArray(allGroups)
+            ? allGroups.filter((group) => group.itemTypeId === formData.itemTypeId || group.ItemType?.id === formData.itemTypeId)
+            : [];
+        }
         if (Array.isArray(itemgroup)) {
           const options = itemgroup.map((product) => ({
             value: product.id,
@@ -143,7 +177,29 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
     if (canCreategroupvalue !== null) {
       itemgroup();
     }
-  }, [dispatch, canCreategroupvalue]);
+  }, [dispatch, formData.itemTypeId, canCreategroupvalue]);
+
+  React.useEffect(() => {
+    const fetchItemTypes = async () => {
+      try {
+        const itemTypes = await dispatch(viewAllItemType());
+        const options = Array.isArray(itemTypes)
+          ? itemTypes.map((type) => ({
+              value: type.id,
+              label: type.name,
+              id: type.id
+            }))
+          : [];
+        setItemTypeOptions(canCreateTypevalue ? [{ value: 'new_type', label: 'Create New Item Type' }, ...options] : options);
+      } catch (error) {
+        console.log(error, 'fetch item Type');
+        setItemTypeOptions(canCreateTypevalue ? [{ value: 'new_type', label: 'Create New Item Type' }] : []);
+      }
+    };
+    if (canCreateTypevalue !== null) {
+      fetchItemTypes();
+    }
+  }, [dispatch, canCreateTypevalue]);
 
   React.useEffect(() => {
     const itemcategory = async () => {
@@ -210,27 +266,36 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
             setFormData({
               productname: productData.productname || '',
               description: productData.description || '',
+              itemTypeId: productData.itemTypeId || productData.itemType?.id || '',
               itemGroupId: productData.itemGroupId || '',
               itemCategoryId: productData.itemCategoryId || '',
               itemSubCategoryId: productData.itemSubCategoryId || '',
+              size: productData.size || '',
               unit: productData.unit || '',
-              salesprice: productData.salesprice || 0,
-              purchaseprice: productData.purchaseprice || 0,
-              HSNcode: productData.HSNcode || 0,
-              gstrate: productData.gstrate || 0,
-              lowStockQty: productData.lowStockQty || null,
-              weight: productData.weight || ''
+              salesprice: productData.salesprice ?? 0,
+              purchaseprice: productData.purchaseprice ?? 0,
+              HSNcode: productData.HSNcode ?? 0,
+              gstrate: productData.gstrate ?? 0,
+              lowStockQty: productData.lowStockQty ?? null,
+              weight: productData.weight ?? ''
             });
 
-            setOpeningStock(productData.openingstock || true);
-            setNagativeQty(productData.nagativeqty || false);
-            setLowStock(productData.lowstock || false);
-            setCess(productData.cess || true);
-            setIsWastage(productData.wastage || false);
-            setIsFinishedGoods(productData.finished_goods || false);
-            setIsRawMaterial(productData.raw_material || false);
-            setIsSpareItem(productData.spare || false);
-            setItemType(productData.itemtype || 'Product');
+            setOpeningStock(productData.openingstock ?? true);
+            setNagativeQty(productData.nagativeqty ?? false);
+            setLowStock(productData.lowstock ?? false);
+            setCess(productData.cess ?? true);
+            setIsWastage(productData.wastage ?? false);
+            setIsFinishedGoods(productData.finished_goods ?? false);
+            setIsRawMaterial(productData.raw_material ?? false);
+            setIsSpareItem(productData.spare ?? false);
+            setSelectedItemType(
+              productData.itemTypeId || productData.itemType?.id
+                ? {
+                    value: productData.itemTypeId || productData.itemType?.id,
+                    label: productData.itemType?.name || ''
+                  }
+                : null
+            );
             setSelectedItemGroup(productData.itemGroupId || '');
             setItemgroupname(productData.itemGroup?.name || '');
             setItemcategoryname(productData.itemCategory?.name || '');
@@ -240,9 +305,11 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
           setFormData({
             productname: '',
             description: '',
+            itemTypeId: '',
             itemGroupId: '',
             itemCategoryId: '',
             itemSubCategoryId: '',
+            size: '',
             unit: '',
             salesprice: 0,
             purchaseprice: 0,
@@ -259,7 +326,7 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
           setIsFinishedGoods(false);
           setIsRawMaterial(false);
           setIsSpareItem(false);
-          setItemType('Product');
+          setSelectedItemType(null);
           setSelectedItemGroup('');
           setItemgroupname('');
           setItemcategoryname('');
@@ -283,7 +350,7 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
     try {
       const data = {
         ...formData,
-        itemtype,
+        itemSubCategoryId: formData.itemSubCategoryId || null,
         openingstock,
         nagativeqty,
         lowstock,
@@ -393,6 +460,28 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
     setItemSubCategoryDrawerOpen(false);
   };
 
+  const handleNewTypeAdded = (newType) => {
+    if (!newType?.name) {
+      setItemTypeDrawerOpen(false);
+      return;
+    }
+    const newOption = { value: newType.id, label: newType.name, id: newType.id };
+    setItemTypeOptions((previousOptions) => [...previousOptions.filter((option) => option.value !== newType.id), newOption]);
+    setSelectedItemType(newOption);
+    setSelectedItemGroup('');
+    setItemgroupname('');
+    setItemcategoryname('');
+    setItemSubCategoryName('');
+    setFormData((previousData) => ({
+      ...previousData,
+      itemTypeId: newType.id,
+      itemGroupId: '',
+      itemCategoryId: '',
+      itemSubCategoryId: ''
+    }));
+    setItemTypeDrawerOpen(false);
+  };
+
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
       <Paper
@@ -414,10 +503,18 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
             <Typography variant="subtitle1">
               Item Type : <span style={{ color: 'red', fontWeight: 'bold', fontSize: '17px' }}>&#42;</span>
             </Typography>
-            <RadioGroup row value={itemtype} onChange={handleItem}>
-              <FormControlLabel value="Product" control={<Radio />} label="Product" />
-              <FormControlLabel value="Service" control={<Radio />} label="Service" />
-            </RadioGroup>
+            <Select
+              options={itemTypeOptions}
+              value={selectedItemType}
+              onChange={handleItem}
+              isClearable
+            />
+            <ItemType
+              open={itemTypeDrawerOpen}
+              onClose={() => setItemTypeDrawerOpen(false)}
+              onnewTypeadded={handleNewTypeAdded}
+              onnewTypeUpdated={handleNewTypeAdded}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">
@@ -438,12 +535,14 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
               options={itemgroupOptions}
               value={formData.itemGroupId ? { value: formData.itemGroupId, label: itemgroupname } : null}
               onChange={handleitemgroupChange}
+              isDisabled={!formData.itemTypeId}
               isClearable
             />
             <ItemGroup
               open={itemGroupDrawerOpen}
               onClose={() => setItemGroupDrawerOpen(false)}
               onnewgroupadded={handleNewgroupadded}
+              defaultItemTypeId={formData.itemTypeId}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -483,6 +582,10 @@ const AnchorProductDrawer = ({ open, onClose, id, onNewProductAdded, onProductUp
               id={null}
               itemCategoryId={formData.itemCategoryId}
             />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">Size :</Typography>
+            <input placeholder="Enter Size" id="size" value={formData.size} onChange={handleInputChange} style={{ width: '100%' }} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle1">

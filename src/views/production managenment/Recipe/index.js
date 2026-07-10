@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const Recipe = ({ recipes, onEdit, onDelete }) => {
-    const formatCurrency = (value) => `₹${Number(value).toFixed(2)}`;
+    const formatCurrency = (value) => `Rs. ${Number(value).toFixed(2)}`;
 
     return (
         <Grid container spacing={2} sx={{p: 2}}>

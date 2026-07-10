@@ -30,6 +30,13 @@ import InputBase from '@mui/material/InputBase';
 
 const columns = [
   { id: 'productname', label: 'Product Name', align: 'center' },
+  { id: 'itemType', label: 'Item Type', align: 'center' },
+  { id: 'itemGroup', label: 'Item Group', align: 'center' },
+  { id: 'itemCategory', label: 'Item Category', align: 'center' },
+  { id: 'itemSubCategory', label: 'Item Sub Category', align: 'center' },
+  { id: 'size', label: 'Size', align: 'center' },
+  { id: 'weight', label: 'WT', align: 'center' },
+  { id: 'unit', label: 'Unit', align: 'center' },
   { id: 'HSNcode', label: 'HSN Code', align: 'center' },
   { id: 'gstrate', label: 'GST Rate', align: 'center' },
   { id: 'salesprice', label: 'Sales Price', align: 'center' },
@@ -181,6 +188,29 @@ const ProductList = () => {
     }
   };
 
+  const renderCellValue = (product, columnId) => {
+    switch (columnId) {
+      case 'itemType':
+        return product.itemType?.name || '-';
+      case 'itemGroup':
+        return product.itemGroup?.name || '-';
+      case 'itemCategory':
+        return product.itemCategory?.name || '-';
+      case 'itemSubCategory':
+        return product.itemSubCategory?.name || '-';
+      case 'createdby':
+        return product.productCreateUser?.username || '-';
+      case 'updatedby':
+        return product.productUpdateUser?.username || '-';
+      case 'gstrate':
+        return product.gstrate !== null && product.gstrate !== undefined ? `${product.gstrate}%` : '-';
+      case 'weight':
+        return product.weight !== null && product.weight !== undefined ? product.weight : '-';
+      default:
+        return product[columnId] !== null && product[columnId] !== undefined && product[columnId] !== '' ? product[columnId] : '-';
+    }
+  };
+
   return (
     <Card style={{ width: '100%', padding: '25px' }}>
       <Typography variant="h4" align="center" id="mycss">
@@ -197,8 +227,8 @@ const ProductList = () => {
           <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} onChange={handleSearch} />
         </Search>
       </SearchContainer>
-      <TableContainer sx={{ maxHeight: 575 }}>
-        <Table style={{ border: '1px solid lightgrey' }}>
+      <TableContainer sx={{ maxHeight: 575, overflowX: 'auto' }}>
+        <Table style={{ border: '1px solid lightgrey', minWidth: 1650 }}>
           <TableHead sx={{ backgroundColor: 'rgba(66, 84, 102, 0.8)' }}>
             <TableRow>
               {columns.map((column) => (
@@ -261,12 +291,8 @@ const ProductList = () => {
                           <Delete style={{ fontSize: '16px' }} />
                         </IconButton>
                       </div>
-                    ) : column.id === 'createdby' ? (
-                      product.productCreateUser?.username
-                    ) : column.id === 'updatedby' ? (
-                      product.productUpdateUser?.username
                     ) : (
-                      product[column.id]
+                      renderCellValue(product, column.id)
                     )}
                   </TableCell>
                 ))}

@@ -15,8 +15,9 @@ import { useDispatch } from 'react-redux';
 import { fetchAllRecipe, deleteRecipe } from 'store/thunk'; 
 import { useNavigate } from 'react-router';
 import { Edit, Delete } from '@mui/icons-material';
+import EditRecipeModal from './EditRecipeModal';
 
-const RecipeList = ({ searchQuery }) => {
+const RecipeList = ({ searchQuery = '', rawMaterials = [] }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
@@ -24,6 +25,8 @@ const RecipeList = ({ searchQuery }) => {
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const getRecipes = () => {
@@ -48,7 +51,7 @@ const RecipeList = ({ searchQuery }) => {
   useEffect(() => {
     if (recipes) {
       const filtered = recipes.filter((recipe) =>
-        recipe.name.toLowerCase().includes(searchQuery.toLowerCase())
+        (recipe.name || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredRecipes(filtered);
     }
@@ -69,11 +72,20 @@ const RecipeList = ({ searchQuery }) => {
     }
   };
 
-  const handleEdit = (id) => {
-    navigate(`/addbillofmaterial/${id}`);
+  const handleEdit = (recipe) => {
+    setSelectedRecipe(recipe);
+    setEditModalOpen(true);
   };
 
-  const formatCurrency = (value) => `₹${Number(value).toFixed(2)}`;
+  const handleEditClose = (shouldRefetch) => {
+    setEditModalOpen(false);
+    setSelectedRecipe(null);
+    if (shouldRefetch) {
+      getRecipes();
+    }
+  };
+
+  const formatCurrency = (value) => `Rs. ${Number(value).toFixed(2)}`;
 
   if (loading) {
     return <Typography>Loading...</Typography>;
@@ -89,7 +101,7 @@ const RecipeList = ({ searchQuery }) => {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="h6" sx={{fontWeight: 'bold'}}>{recipe.name}</Typography>
                     <Box>
-                        <IconButton size='small' onClick={() => handleEdit(recipe.id)}>
+                        <IconButton size='small' onClick={() => handleEdit(recipe)}>
                             <Edit />
                         </IconButton>
                         <IconButton size='small' onClick={() => handleDeleteConfirmation(recipe.id)}>
@@ -125,6 +137,14 @@ const RecipeList = ({ searchQuery }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      {selectedRecipe && (
+        <EditRecipeModal
+          open={editModalOpen}
+          handleClose={handleEditClose}
+          recipe={selectedRecipe}
+          rawMaterials={rawMaterials}
+        />
+      )}
     </>
   );
 };

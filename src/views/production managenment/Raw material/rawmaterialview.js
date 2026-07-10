@@ -1,29 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Grid, Paper } from '@mui/material';
-import { useMediaQuery } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { viewRawMaterial } from 'store/thunk';
 
 const Rawmaterialview = () => {
-  const isMobile = useMediaQuery('(max-width:600px)');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
   const [data, setData] = useState({});
 
-  //called api for view data
   useEffect(() => {
     dispatch(viewRawMaterial(id))
-      .then((data) => {
-        setData(data);
+      .then((rawMaterial) => {
+        setData(rawMaterial || {});
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response?.status === 401) {
           navigate('/');
         }
-        console.error('Error fetching User data:', error);
+        console.error('Error fetching raw material data:', error);
       });
   }, [dispatch, id, navigate]);
 
@@ -34,63 +30,29 @@ const Rawmaterialview = () => {
       </Typography>
       <Grid container spacing={4} sx={{ padding: '0px 20px' }}>
         <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Item Type</Typography>
-          <Typography variant="subtitle2">{data?.itemtype}</Typography>
+          <Typography variant="subtitle1">Material Name</Typography>
+          <Typography variant="subtitle2">{data?.name || '-'}</Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Product Name</Typography>
-          <Typography variant="subtitle2">{data?.productname}</Typography>
+          <Typography variant="subtitle1">Rate / KG</Typography>
+          <Typography variant="subtitle2">Rs. {Number(data?.rate_per_kg || 0).toFixed(2)}</Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Description</Typography>
-          <Typography variant="subtitle2">{data?.description}</Typography>
+          <Typography variant="subtitle1">Company ID</Typography>
+          <Typography variant="subtitle2">{data?.companyId || '-'}</Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Item Group</Typography>
-          <Typography variant="subtitle2">{data?.itemgroup}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Item Category</Typography>
-          <Typography variant="subtitle2">{data?.itemcategory}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Unit</Typography>
-          <Typography variant="subtitle2">{data?.unit}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Sales Price</Typography>
-          <Typography variant="subtitle2">{data?.salesprice}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Purchase Price</Typography>
-          <Typography variant="subtitle2">{data?.purchaseprice}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Gst Rate</Typography>
-          <Typography variant="subtitle2">{data?.gstrate}%</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Hsn Code</Typography>
-          <Typography variant="subtitle2">{data?.HSNcode}</Typography>
+          <Typography variant="subtitle1">Last Updated</Typography>
+          <Typography variant="subtitle2">{data?.updatedAt ? new Date(data.updatedAt).toLocaleString() : '-'}</Typography>
         </Grid>
 
-        {isMobile ? (
-          <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Link to="/rawmateriallist" style={{ textDecoration: 'none' }}>
-              <div>
-                <button id="savebtncs">Cancel</button>
-              </div>
-            </Link>
-          </Grid>
-        ) : (
-          <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Link to="/rawmateriallist" style={{ textDecoration: 'none' }}>
-              <div>
-                <button id="savebtncs">Cancel</button>
-              </div>
-            </Link>
-          </Grid>
-        )}
+        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Link to="/rawmateriallist" style={{ textDecoration: 'none' }}>
+            <div>
+              <button id="savebtncs">Cancel</button>
+            </div>
+          </Link>
+        </Grid>
       </Grid>
     </Paper>
   );

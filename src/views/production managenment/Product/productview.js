@@ -27,56 +27,46 @@ const Productview = () => {
       });
   }, [dispatch, id, navigate]);
 
+  const formatBoolean = (value) => (value ? 'Yes' : 'No');
+  const productFields = [
+    { label: 'Item Type', value: data?.itemType?.name },
+    { label: 'Product Name', value: data?.productname },
+    { label: 'Description', value: data?.description },
+    { label: 'Item Group', value: data?.itemGroup?.name },
+    { label: 'Item Category', value: data?.itemCategory?.name },
+    { label: 'Item Sub Category', value: data?.itemSubCategory?.name },
+    { label: 'Size', value: data?.size },
+    { label: 'Weight', value: data?.weight },
+    { label: 'Unit', value: data?.unit },
+    { label: 'Sales Price', value: data?.salesprice },
+    { label: 'Purchase Price', value: data?.purchaseprice },
+    { label: 'GST Rate', value: data?.gstrate !== undefined && data?.gstrate !== null ? `${data.gstrate}%` : null },
+    { label: 'HSN Code', value: data?.HSNcode },
+    { label: 'Opening Stock', value: formatBoolean(data?.openingstock) },
+    { label: 'Negative Qty Allowed', value: formatBoolean(data?.nagativeqty) },
+    { label: 'Low Stock Warning', value: formatBoolean(data?.lowstock) },
+    { label: 'Low Stock Quantity', value: data?.lowStockQty },
+    { label: 'Cess Enable', value: formatBoolean(data?.cess) },
+    { label: 'Wastage', value: formatBoolean(data?.wastage) },
+    { label: 'Finished Goods', value: formatBoolean(data?.finished_goods) },
+    { label: 'Raw Material', value: formatBoolean(data?.raw_material) },
+    { label: 'Spare Item', value: formatBoolean(data?.spare) }
+  ];
+
+  const displayValue = (value) => (value !== null && value !== undefined && value !== '' ? value : '-');
+
   return (
     <Paper elevation={3} style={{ padding: '24px' }}>
       <Typography variant="h4" align="center" id="mycss">
         Product View
       </Typography>
       <Grid container spacing={4} sx={{ padding: '0px 20px' }}>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Item Type</Typography>
-          <Typography variant="subtitle2">{data?.itemtype}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Product Name</Typography>
-          <Typography variant="subtitle2">{data?.productname}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Description</Typography>
-          <Typography variant="subtitle2">{data?.description}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Item Group</Typography>
-          <Typography variant="subtitle2">{data?.itemGroup?.name}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Item Category</Typography>
-          <Typography variant="subtitle2">{data?.itemCategory?.name}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Item Sub Category</Typography>
-          <Typography variant="subtitle2">{data?.itemSubCategory?.name}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Unit</Typography>
-          <Typography variant="subtitle2">{data?.unit}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Sales Price</Typography>
-          <Typography variant="subtitle2">{data?.salesprice}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Purchase Price</Typography>
-          <Typography variant="subtitle2">{data?.purchaseprice}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Gst Rate</Typography>
-          <Typography variant="subtitle2">{data?.gstrate}%</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Typography variant="subtitle1">Hsn Code</Typography>
-          <Typography variant="subtitle2">{data?.HSNcode}</Typography>
-        </Grid>
+        {productFields.map((field) => (
+          <Grid item xs={12} sm={6} md={3} key={field.label}>
+            <Typography variant="subtitle1">{field.label}</Typography>
+            <Typography variant="subtitle2">{displayValue(field.value)}</Typography>
+          </Grid>
+        ))}
 
         {isMobile ? (
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>

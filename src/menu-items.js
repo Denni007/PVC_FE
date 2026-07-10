@@ -273,6 +273,14 @@ const MenuItem = () => {
     'view_all_itemSubCategory_category'
   ]);
 
+  const hasAllPermissionsItemType = checkAllPermissions('Item Type', [
+    'create_itemType',
+    'update_itemType',
+    'delete_itemType',
+    'view_single_itemType',
+    'view_all_itemType'
+  ]);
+
   const hasAllPermissionsOp = checkAllPermissions('Order Processing', [
     'create_order_processing',
     'update_order_processing',
@@ -728,6 +736,12 @@ const MenuItem = () => {
                 title: "Account's",
                 type: 'item',
                 url: '/accountlist'
+              },
+              hasAllPermissionsItemType && {
+                id: 'Item Type',
+                title: 'Item Type',
+                type: 'item',
+                url: '/itemtypelist'
               },
               hasAllPermissionsItemGroup && {
                 id: 'Item Group',

@@ -35,7 +35,7 @@ const AddRecipeModal = ({ open, handleClose, rawMaterials }) => {
   const [name, setName] = useState('');
   const [productionCost, setProductionCost] = useState('');
   const [components, setComponents] = useState([
-    { material: '', usage: '', rate: 0, total: 0 }
+    { material: '', materialName: '', usage: '', rate: 0, total: 0 }
   ]);
 
   // Derived State for Calculations
@@ -56,7 +56,7 @@ const AddRecipeModal = ({ open, handleClose, rawMaterials }) => {
 
   // Handlers
   const handleAddComponent = () => {
-    setComponents([...components, { material: '', usage: '', rate: 0, total: 0 }]);
+    setComponents([...components, { material: '', materialName: '', usage: '', rate: 0, total: 0 }]);
   };
 
   const handleRemoveComponent = (index) => {
@@ -72,8 +72,9 @@ const AddRecipeModal = ({ open, handleClose, rawMaterials }) => {
     component[name] = value;
 
     if (name === 'material') {
-      const selectedMaterial = rawMaterials.find(m => m.id === value);
+      const selectedMaterial = rawMaterials.find(m => Number(m.id) === Number(value));
       component.rate = selectedMaterial ? selectedMaterial.rate_per_kg : 0;
+      component.materialName = selectedMaterial ? selectedMaterial.name : '';
     }
     
     const usage = parseFloat(component.usage || 0);
@@ -89,8 +90,11 @@ const AddRecipeModal = ({ open, handleClose, rawMaterials }) => {
     const validComponents = components
       .filter(c => c.material && c.usage)
       .map(c => ({
-        material: c.material,
+        raw_material_id: Number(c.material),
+        material: c.materialName,
         usage: parseFloat(c.usage),
+        rate_per_kg: parseFloat(c.rate || 0),
+        total: parseFloat(c.total || 0),
       }));
 
     if (validComponents.length === 0) return toast.error('Please add at least one valid material to the recipe.');
@@ -114,7 +118,7 @@ const AddRecipeModal = ({ open, handleClose, rawMaterials }) => {
     }
   };
 
-  const formatCurrency = (value) => `₹${Number(value).toFixed(2)}`;
+  const formatCurrency = (value) => `Rs. ${Number(value).toFixed(2)}`;
   const formatPercentage = (value) => `${Number(value).toFixed(2)}%`;
 
   return (
@@ -131,7 +135,7 @@ const AddRecipeModal = ({ open, handleClose, rawMaterials }) => {
             <TextField fullWidth variant="outlined" value={name} onChange={(e) => setName(e.target.value)} />
           </Grid>
           <Grid item xs={12} md={3}>
-            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'medium' }}>PRODUCTION COST (₹/KG)</Typography>
+            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'medium' }}>PRODUCTION COST (RS/KG)</Typography>
             <TextField fullWidth variant="outlined" type="number" value={productionCost} onChange={(e) => setProductionCost(e.target.value)} />
           </Grid>
         </Grid>
@@ -156,7 +160,8 @@ const AddRecipeModal = ({ open, handleClose, rawMaterials }) => {
             </TableHead>
             <TableBody>
               {components.map((component, index) => {
-                const contribPercentage = totalAmount > 0 ? (component.total / totalAmount) * 100 : 0;
+                const componentUsage = parseFloat(component.usage || 0);
+                const contribPercentage = totalUsage > 0 ? (componentUsage / totalUsage) * 100 : 0;
                 return (
                   <TableRow key={index}>
                     <TableCell sx={{ minWidth: 200 }}>
